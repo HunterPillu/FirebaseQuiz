@@ -19,7 +19,7 @@ class HomeActivity : AppCompatActivity() {
             "home" -> {
                 supportFragmentManager
                     .beginTransaction()
-                    .replace(R.id.container, LoginFragment.newInstance(), LoginFragment.TAG)
+                    .replace(R.id.container, HomeFragment.newInstance(), HomeFragment.TAG)
                     .commit()
             }
             "login" -> {

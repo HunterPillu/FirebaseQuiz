@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="pq_toolbar_title_horizontal_margin">64dp</dimen>
+    <dimen name="pq_toolbar_icon_padding">12dp</dimen>
+</resources>

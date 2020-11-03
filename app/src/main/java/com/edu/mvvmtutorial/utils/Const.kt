@@ -36,12 +36,11 @@ object Const {
 
 
     //FIRESTORE TABLE
-    const val TABLE_BOOKMARK = "bookmarks"
     const val TABLE_REFERENCE = "reference"
     const val TABLE_CATEGORY = "category"
     const val TABLE_USERS = "users"
-    const val TABLE_VIDEOS = "videos"
-    const val TABLE_AFFAIRS = "current_affairs"
+    const val TABLE_QUIZ = "quiz"
+    const val TABLE_COURSE = "course"
 
     //FIRESTORE SUB-COLLECTION
     const val SUB_BOOKMARK_VIDEOS = "bookmark_videos"

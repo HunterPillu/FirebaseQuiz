@@ -15,6 +15,9 @@ fun shortToast(context: Context, @StringRes text: Int) {
 fun showMsg(context: Context, @StringRes text: Int) {
     shortToast(context, context.getString(text))
 }
+fun showMsg(context: Context, text: String) {
+    shortToast(context, text)
+}
 
 fun shortToast(context: Context, text: String) {
     show(context, text, Toast.LENGTH_SHORT)

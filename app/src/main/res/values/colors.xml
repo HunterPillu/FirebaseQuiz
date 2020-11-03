@@ -25,6 +25,6 @@
     <color name="lightGray">#ededed</color>
 
     <!--Splash Screen-->
-    <color name="splash_background">@color/purple_500</color>
+    <color name="splash_background">@color/colorPrimary</color>
 
 </resources>

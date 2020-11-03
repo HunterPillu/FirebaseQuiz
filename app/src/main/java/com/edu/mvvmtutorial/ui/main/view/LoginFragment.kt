@@ -18,7 +18,7 @@ import com.edu.mvvmtutorial.utils.Status
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.ErrorCodes
 import com.firebase.ui.auth.IdpResponse
-import kotlinx.android.synthetic.main.login_fragment.*
+import kotlinx.android.synthetic.main.pq_fragment_login.*
 import java.util.*
 
 class LoginFragment : Fragment() {
@@ -35,7 +35,7 @@ class LoginFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.login_fragment, container, false)
+        return inflater.inflate(R.layout.pq_fragment_login, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
