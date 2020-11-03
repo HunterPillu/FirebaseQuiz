@@ -18,7 +18,7 @@ class MainAdapter(
             itemView.textViewUserName.text = user.name
             itemView.textViewUserEmail.text = user.email
             Glide.with(itemView.imageViewAvatar.context)
-                .load(user.avatar)
+                .load(user.photoUrl)
                 .into(itemView.imageViewAvatar)
         }
     }

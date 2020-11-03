@@ -14,7 +14,6 @@ import kotlinx.coroutines.launch
 class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
 
     private val users = MutableLiveData<Resource<List<User>>>()
-    private val compositeDisposable = CompositeDisposable()
 
     init {
         fetchUsers()
@@ -44,14 +43,8 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
         )*/
     }
 
-    suspend fun fetchAndShowUser() {
-        val userList = mainRepository.getUsers()
-        users.postValue(Resource.success(userList))
-    }
-
     override fun onCleared() {
         super.onCleared()
-        compositeDisposable.dispose()
     }
 
     fun getUsers(): LiveData<Resource<List<User>>> {
