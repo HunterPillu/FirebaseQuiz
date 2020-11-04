@@ -1,25 +1,23 @@
 # FirebaseQuiz - Android App 
 
-<img src="/app/src/main/res/drawable/logo.png" align="left"
-width="200" hspace="10" vspace="10">
+<img src="/app/src/main/res/drawable/logo.png" align="left" width="200" hspace="10" vspace="10">
 
 FirebaseQuiz is a self-hosted Trivia quiz app.  
 Unlike other services, FirebaseQuiz is free and open source.  
 
 <p align="left">
-<a href="https://play.google.com/store/apps/details?id=com.prinkal.quiz">
-    <img alt="Get it on Google Play"
-        height="80"
-        src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" />
-</a>
+    <a href="https://play.google.com/store/apps/details?id=com.prinkal.quiz">
+        <img alt="Get it on Google Play" height="80" src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" />
+    </a>
 </p>
+<br>
 
 ## About
 
 FirebaseQuiz Android app has been made for you to play online multiplayer quiz for any course or subject (eg. Maths, Physics, Current affairs).
 
-
 This application was originally created by <b>Prinkal Kumar</b> and released under the GNU GPLv3.
+
 
 ## Features
 
@@ -31,12 +29,12 @@ The android app lets you:
 
 ## Screenshots
 
-[<img src="/readme/Wallabag%20Reading%20List.png" align="left"
-width="200"
-    hspace="10" vspace="10">](/readme/Wallabag%20Reading%20List.png)
-[<img src="/readme/Wallabag%20Article%20View.png" align="center"
-width="200"
-    hspace="10" vspace="10">](/readme/Wallabag%20Article%20View.png)
+[<img src="/app/src/main/res/drawable/logo.png" align="left"
+width="200" hspace="10" vspace="10">](/app/src/main/res/drawable/logo.png)
+
+[<img src="/app/src/main/res/drawable/logo.png" align="center"
+width="200" hspace="10" vspace="10">](/app/src/main/res/drawable/logo.png)
+
 
 ## Permissions
 
