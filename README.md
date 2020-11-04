@@ -1,14 +1,10 @@
 # FirebaseQuiz - Android App 
-[![Build Status](https://travis-ci.org/wallabag/android-app.svg?branch=master)](https://travis-ci.org/wallabag/android-app)
 
 <img src="/app/src/main/res/drawable/logo.png" align="left"
 width="200" hspace="10" vspace="10">
 
 FirebaseQuiz is a self-hosted Trivia quiz app.  
 Unlike other services, FirebaseQuiz is free and open source.  
-
-wallabag is available on the Google Play Store and F-Droid.
-
 
 <p align="left">
 <a href="https://play.google.com/store/apps/details?id=com.prinkal.quiz">
@@ -44,7 +40,7 @@ width="200"
 
 ## Permissions
 
-On Android versions prior to Android 6.0, wallabag requires the following permissions:
+On Android versions prior to Android 6.0, requires the following permissions:
 - Full Network Access.
 - View Network Connections.
 
