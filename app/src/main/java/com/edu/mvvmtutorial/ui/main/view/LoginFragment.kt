@@ -9,12 +9,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.covidbeads.app.assesment.util.showMsg
 import com.edu.mvvmtutorial.R
 import com.edu.mvvmtutorial.data.model.User
 import com.edu.mvvmtutorial.ui.base.ViewModelFactory
 import com.edu.mvvmtutorial.ui.main.viewmodel.LoginViewModel
 import com.edu.mvvmtutorial.utils.Status
+import com.edu.mvvmtutorial.utils.showMsg
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.ErrorCodes
 import com.firebase.ui.auth.IdpResponse
@@ -92,7 +92,7 @@ class LoginFragment : Fragment() {
                 Status.ERROR -> {
                     //Handle Error
                     progressBar.visibility = View.GONE
-                    showMsg(context!!, R.string.unknown_error)
+                    showMsg(requireContext(), R.string.unknown_error)
                 }
             }
         })
@@ -119,22 +119,22 @@ class LoginFragment : Fragment() {
                 // Sign in failed
                 if (response == null) {
                     // User pressed back button
-                    showMsg(context!!, R.string.sign_in_cancelled)
+                    showMsg(requireContext(), R.string.sign_in_cancelled)
                     return
                 }
 
                 if (response.error?.errorCode == ErrorCodes.NO_NETWORK) {
-                    showMsg(context!!, R.string.no_internet_connection)
+                    showMsg(requireContext(), R.string.no_internet_connection)
                     return
                 }
 
                 if (response.error?.errorCode == ErrorCodes.UNKNOWN_ERROR) {
-                    showMsg(context!!, R.string.unknown_error)
+                    showMsg(requireContext(), R.string.unknown_error)
                     return
                 }
             }
 
-            showMsg(context!!, R.string.unknown_sign_in_response)
+            showMsg(requireContext(), R.string.unknown_sign_in_response)
 
         }
 

@@ -8,7 +8,6 @@ import android.widget.AdapterView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.covidbeads.app.assesment.util.showMsg
 import com.edu.mvvmtutorial.R
 import com.edu.mvvmtutorial.data.model.Course
 import com.edu.mvvmtutorial.data.model.Quiz
@@ -17,6 +16,7 @@ import com.edu.mvvmtutorial.ui.main.adapter.CourseSpinnerAdapter
 import com.edu.mvvmtutorial.ui.main.adapter.QuizAdapter
 import com.edu.mvvmtutorial.ui.main.viewmodel.HomeViewModel
 import com.edu.mvvmtutorial.utils.Status
+import com.edu.mvvmtutorial.utils.showMsg
 import kotlinx.android.synthetic.main.pq_fragment_home.*
 import kotlinx.android.synthetic.main.toolbar_home.*
 

@@ -1,19 +1,49 @@
 package com.edu.mvvmtutorial.data.api
 
-import com.edu.mvvmtutorial.data.model.Course
-import com.edu.mvvmtutorial.data.model.Quiz
-import com.edu.mvvmtutorial.data.model.User
+import com.edu.mvvmtutorial.data.model.*
+import com.edu.mvvmtutorial.utils.Const
 import com.edu.mvvmtutorial.utils.CustomLog
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.ktx.Firebase
-import com.meripadhai.utils.Const
 import kotlinx.coroutines.tasks.await
 
 object FirebaseApi {
     private const val TAG = "FirebaseAPI"
+
+    //create update user on firebase
+    suspend fun uploadCourses(data: Quizes): Boolean {
+        val courseRef = Firebase.firestore
+            .collection(Const.TABLE_QUIZ)
+
+        return try {
+            for (quiz in data.quizes!!) {
+
+
+                val questions = arrayListOf<Question>()
+                questions.addAll(quiz.questions!!)
+                quiz.questions = null
+
+                val uid = courseRef.document().id
+                quiz.uid=uid
+                courseRef.document(uid).set(quiz)
+                    .await()
+
+                for (ques in questions) {
+                    val quesRef = courseRef.document(uid).collection(Const.TABLE_QUESTION)
+                    val quesId = quesRef.document().id
+                    ques.uid=quesId
+                    quesRef.document(quesId).set(ques).await()
+                }
+            }
+            true
+        } catch (e: Exception) {
+            CustomLog.e(TAG, e)
+            false
+        }
+    }
 
     //create update user on firebase
     suspend fun createUser(user: User): Boolean {
@@ -55,11 +85,7 @@ object FirebaseApi {
 
     //fetch all courses
     suspend fun fetchCourse(): List<Course> {
-        val ref: Query
         // courseId = -1 means fetch all data otherwise fetch filtered data
-
-            ref =
-
         return try {
             val data = Firebase.firestore
                 .collection(Const.TABLE_COURSE).get()

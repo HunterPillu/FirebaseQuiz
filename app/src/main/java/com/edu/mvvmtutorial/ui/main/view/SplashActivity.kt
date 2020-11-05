@@ -4,17 +4,28 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
-import com.covidbeads.app.assesment.util.shortToast
 import com.edu.mvvmtutorial.BuildConfig
 import com.edu.mvvmtutorial.R
+import com.edu.mvvmtutorial.data.api.FirebaseApi
+import com.edu.mvvmtutorial.data.model.Quizes
 import com.edu.mvvmtutorial.data.model.Reference
+import com.edu.mvvmtutorial.utils.Connectivity
+import com.edu.mvvmtutorial.utils.Const
 import com.edu.mvvmtutorial.utils.CustomLog
+import com.edu.mvvmtutorial.utils.shortToast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
-import com.meripadhai.utils.Connectivity
-import com.meripadhai.utils.Const
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.pq_activity_splash.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import org.json.JSONException
+import java.io.IOException
+import java.io.InputStream
+import java.nio.charset.Charset
+
 
 class SplashActivity : AppCompatActivity() {
     var isFinished = false
@@ -23,7 +34,12 @@ class SplashActivity : AppCompatActivity() {
         setContentView(R.layout.pq_activity_splash)
         tvVersion.setText(BuildConfig.VERSION_NAME)
         fetchReferenceData()
-
+        bUpload.setOnClickListener {
+            GlobalScope.launch(Dispatchers.IO) {
+                isFinished = true
+                savedDummyData()
+            }
+        }
     }
 
     private fun fetchReferenceData() {
@@ -98,5 +114,37 @@ class SplashActivity : AppCompatActivity() {
                 startActivity(intent)
             }
         }, 1000)
+    }
+
+    fun loadJSONFromAsset(): String? {
+        var json: String? = null
+        json = try {
+            val iss: InputStream = getAssets().open("quiestion_list.json")
+            val size: Int = iss.available()
+            val buffer = ByteArray(size)
+            iss.read(buffer)
+            iss.close()
+            String(buffer, Charset.forName("UTF-8"))
+        } catch (ex: IOException) {
+            ex.printStackTrace()
+            return null
+        }
+        return json
+    }
+
+    private suspend fun savedDummyData() {
+        try {
+            //val obj = JSONObject(loadJSONFromAsset()!!)
+            val courses = Gson().fromJson(loadJSONFromAsset(), Quizes::class.java)
+            //val questions=Gson().fromJson(loadJSONFromAsset(),Courses::class.java)
+            val isSuccess = FirebaseApi.uploadCourses(courses)
+            if (isSuccess) {
+                openNextScreen()
+            } else {
+                CustomLog.e("error", "something went wrong")
+            }
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
     }
 }

@@ -1,4 +1,4 @@
-package com.covidbeads.app.assesment.util
+package com.edu.mvvmtutorial.utils
 
 import android.content.Context
 import android.widget.Toast

@@ -1,4 +1,4 @@
-package com.meripadhai.utils
+package com.edu.mvvmtutorial.utils
 
 object Const {
 
@@ -37,7 +37,7 @@ object Const {
 
     //FIRESTORE TABLE
     const val TABLE_REFERENCE = "reference"
-    const val TABLE_CATEGORY = "category"
+    const val TABLE_QUESTION = "question"
     const val TABLE_USERS = "users"
     const val TABLE_QUIZ = "quiz"
     const val TABLE_COURSE = "course"

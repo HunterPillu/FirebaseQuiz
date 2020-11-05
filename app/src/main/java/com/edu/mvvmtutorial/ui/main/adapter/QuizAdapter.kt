@@ -14,8 +14,8 @@ class QuizAdapter(
 
     class DataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(vo: Quiz) {
-            itemView.tvName.text = vo.title
-            itemView.tvDesc.text = vo.desc
+            itemView.tvName.text = vo.name
+            itemView.tvDesc.text = vo.description
 
         }
     }

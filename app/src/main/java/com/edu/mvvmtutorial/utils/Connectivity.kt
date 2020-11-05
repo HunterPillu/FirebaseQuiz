@@ -1,4 +1,4 @@
-package com.meripadhai.utils
+package com.edu.mvvmtutorial.utils
 
 import android.content.Context
 import android.net.ConnectivityManager

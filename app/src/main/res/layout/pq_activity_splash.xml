@@ -10,12 +10,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <!--<androidx.appcompat.widget.AppCompatImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/margin_full"
-            app:srcCompat="@mipmap/ic_launcher" />
+            app:srcCompat="@mipmap/ic_launcher" />-->
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/bUpload"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_margin="@dimen/margin_full"
+            android:text="@string/upload"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            app:strokeColor="@color/white" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvVersion"
