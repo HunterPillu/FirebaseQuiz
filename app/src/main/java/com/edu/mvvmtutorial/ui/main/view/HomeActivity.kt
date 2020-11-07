@@ -1,11 +1,11 @@
 package com.edu.mvvmtutorial.ui.main.view
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import com.edu.mvvmtutorial.R
+import com.edu.mvvmtutorial.ui.base.BaseActivity
 
-class HomeActivity : AppCompatActivity() {
+class HomeActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.pq_activity_home)
@@ -17,16 +17,10 @@ class HomeActivity : AppCompatActivity() {
         supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         when (destScreen) {
             "home" -> {
-                supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.container, HomeFragment.newInstance(), HomeFragment.TAG)
-                    .commit()
+                openFragment(HomeFragment.newInstance())
             }
             "login" -> {
-                supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.container, LoginFragment.newInstance(), LoginFragment.TAG)
-                    .commit()
+                openFragment(LoginFragment.newInstance())
             }
         }
     }

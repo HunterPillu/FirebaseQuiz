@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.edu.mvvmtutorial.data.api.FirebaseApi
 import com.edu.mvvmtutorial.data.model.Course
 import com.edu.mvvmtutorial.data.model.Quiz
+import com.edu.mvvmtutorial.utils.CustomLog
 import com.edu.mvvmtutorial.utils.Resource
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -18,8 +19,9 @@ class HomeViewModel : ViewModel() {
     private val courseList = MutableLiveData<Resource<List<Course>>>()
 
     init {
+        CustomLog.e(TAG, "init")
         //quizList.postValue(Resource.idle())
-        fetchQuiz(-1)
+        //fetchQuiz(-1)
         fetchCourse()
     }
 
@@ -51,6 +53,10 @@ class HomeViewModel : ViewModel() {
 
     fun getCourseList(): LiveData<Resource<List<Course>>> {
         return courseList
+    }
+
+    companion object {
+        internal val TAG = HomeViewModel::class.java.name
     }
 
 }

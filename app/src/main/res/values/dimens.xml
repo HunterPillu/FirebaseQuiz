@@ -2,4 +2,7 @@
 <resources>
     <dimen name="pq_toolbar_title_horizontal_margin">64dp</dimen>
     <dimen name="pq_toolbar_icon_padding">12dp</dimen>
+    <dimen name="pq_grid_item_divider">1dp</dimen>
+    <dimen name="pq_size_online_status">10dp</dimen>
+    <dimen name="pq_size_user_item_img">48dp</dimen>
 </resources>

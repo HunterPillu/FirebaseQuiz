@@ -35,7 +35,7 @@
                 android:src="@drawable/pq_back_24" />
 
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tvTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -77,6 +77,7 @@
 
             <androidx.appcompat.widget.AppCompatSpinner
                 android:id="@+id/spCourse"
+                style="@style/Widget.AppCompat.Spinner.DropDown.ActionBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"

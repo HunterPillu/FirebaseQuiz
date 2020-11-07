@@ -6,11 +6,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.edu.mvvmtutorial.R
 import com.edu.mvvmtutorial.data.model.User
+import com.edu.mvvmtutorial.ui.base.BaseFragment
 import com.edu.mvvmtutorial.ui.base.ViewModelFactory
 import com.edu.mvvmtutorial.ui.main.viewmodel.LoginViewModel
 import com.edu.mvvmtutorial.utils.Status
@@ -21,7 +22,7 @@ import com.firebase.ui.auth.IdpResponse
 import kotlinx.android.synthetic.main.pq_fragment_login.*
 import java.util.*
 
-class LoginFragment : Fragment() {
+class LoginFragment : BaseFragment() {
 
     companion object {
         val TAG: String = "LoginFrag"
@@ -99,7 +100,13 @@ class LoginFragment : Fragment() {
     }
 
     private fun goNext() {
-        startActivity(Intent(context, MainActivity::class.java))
+        firebaseInitGame()
+        activity?.supportFragmentManager?.popBackStack(
+            null,
+            FragmentManager.POP_BACK_STACK_INCLUSIVE
+        );
+        openFragment(HomeFragment.newInstance())
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -110,10 +117,7 @@ class LoginFragment : Fragment() {
 
             // Successfully signed in
             if (resultCode == Activity.RESULT_OK) {
-                val user = User()
-
                 viewModel.saveUser()
-
                 return
             } else {
                 // Sign in failed

@@ -11,10 +11,12 @@
     app:strokeWidth="1dp">
 
 
-    <RelativeLayout
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_half">
+        android:padding="@dimen/margin_half">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvName"
@@ -36,13 +38,14 @@
             android:layout_toStartOf="@+id/ivNext"
             tools:text="Course Desc" />
 
+
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivNext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:padding="@dimen/pq_toolbar_icon_padding"
+            android:padding="@dimen/margin_medium"
             android:rotation="180"
             app:srcCompat="@drawable/pq_back_24"
             app:tint="@color/colorPrimary" />

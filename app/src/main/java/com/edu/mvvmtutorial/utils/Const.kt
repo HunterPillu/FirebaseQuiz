@@ -3,7 +3,6 @@ package com.edu.mvvmtutorial.utils
 object Const {
 
 
-
     const val SCREEN_USER_INVITE = 203
     const val SCREEN_COURSE = 202
     const val SCREEN_USER = 201
@@ -23,7 +22,6 @@ object Const {
     const val FB_ERROR = "Firebase_Error"
 
 
-
     //EVENT TYPE
     const val TYPE_PAGINATION = 8
     const val TYPE_CLICKED_3 = 7
@@ -41,6 +39,7 @@ object Const {
     const val TABLE_USERS = "users"
     const val TABLE_QUIZ = "quiz"
     const val TABLE_COURSE = "course"
+    const val TABLE_ROOM = "room"
 
     //FIRESTORE SUB-COLLECTION
     const val SUB_BOOKMARK_VIDEOS = "bookmark_videos"
