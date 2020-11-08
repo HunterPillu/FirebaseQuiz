@@ -12,12 +12,12 @@ open class BaseFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     //private var TAG = BaseFragment::class.java.name
     //var layoutView: View? = null
     private lateinit var listener: FragmentEventListener
-    lateinit var connectionLiveData: ConnectionLiveData
+    //lateinit var connectionLiveData: ConnectionLiveData
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         listener = context as FragmentEventListener
-        connectionLiveData = listener.getConnectionObject()
+        //connectionLiveData = listener.getConnectionObject()
     }
 
     open fun onBackPressed() {

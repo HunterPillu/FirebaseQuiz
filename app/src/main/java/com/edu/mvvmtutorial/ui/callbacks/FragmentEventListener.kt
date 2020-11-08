@@ -9,7 +9,7 @@ interface FragmentEventListener {
     fun updateToolbarTitle(title: String)
     fun openFragment(fragment: BaseFragment)
     fun onInviteOpponent(opponent: User)
-    fun getConnectionObject(): ConnectionLiveData
+    //fun getConnectionObject(): ConnectionLiveData
     fun firebaseInitGame()
 
 }

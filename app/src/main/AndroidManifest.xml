@@ -12,8 +12,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MVVMTutorial">
-        <activity android:name=".ui.main.view.HomeActivity"></activity>
-        <activity android:name=".ui.main.view.MainActivity"></activity>
+        <activity
+            android:name=".ui.main.view.HomeActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden" />
+
+        <activity android:name=".ui.main.view.MainActivity" />
         <activity
             android:name=".ui.main.view.SplashActivity"
             android:theme="@style/SplashScreen">

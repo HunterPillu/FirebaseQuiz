@@ -1,17 +1,16 @@
 package com.edu.mvvmtutorial.ui.base
 
-import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import com.edu.mvvmtutorial.R
 import com.edu.mvvmtutorial.data.api.FirebaseApi
-import com.edu.mvvmtutorial.data.model.GameRoom
+import com.edu.mvvmtutorial.data.model.Invite
 import com.edu.mvvmtutorial.data.model.User
 import com.edu.mvvmtutorial.ui.callbacks.FragmentEventListener
 import com.edu.mvvmtutorial.ui.firebase.FirebaseData
-import com.edu.mvvmtutorial.utils.ConnectionLiveData
 import com.edu.mvvmtutorial.utils.Const
 import com.edu.mvvmtutorial.utils.CustomLog
+import com.edu.mvvmtutorial.utils.Utils
 import com.edu.mvvmtutorial.utils.showMsg
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.ktx.auth
@@ -24,18 +23,17 @@ import kotlinx.coroutines.launch
 
 open class BaseActivity : AppCompatActivity(), FragmentEventListener {
     private var dataListener: ListenerRegistration? = null
-    private val TAG = "BaseActivity"
+    private val TAG = BaseActivity::class.java.name
 
+    //protected lateinit var connectionLiveData: ConnectionLiveData
     private var callRef: DocumentReference? = null
-    protected lateinit var connectionLiveData: ConnectionLiveData
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+
+    fun initParent() {
         //automatic initialize Firebase database for game event listener : Game-Invitation
-        connectionLiveData = ConnectionLiveData(this)
-        if (null != Firebase.auth.currentUser) {
-            firebaseInitGame()
-        }
+        //connectionLiveData = ConnectionLiveData(this)
+        firebaseInitGame()
+
     }
 
     override fun onBackPressed() {
@@ -86,28 +84,55 @@ open class BaseActivity : AppCompatActivity(), FragmentEventListener {
     //Firebase game listeners
 
     override fun onInviteOpponent(opponent: User) {
+        //check for valid invite
+
+        //can invite if player offline
         if (!Const.CAN_REQUEST_IF_OFFLINE && !opponent.online) {
-            showSnackbar(R.string.user_offline)
+            showMsg(this, getString(R.string.pq_user_offline, opponent.name))
             return
         }
+
+        //check if player is already in game
+        if (opponent.status == Const.STATUS_IN_GAME) {
+            showMsg(this, getString(R.string.pq_user_in_game, opponent.name))
+            return
+        }
+
+        if (opponent.status == Const.STATUS_INVITATION_RECEIVED
+            && Utils.hasInvitationExpired(opponent.ts)
+        ) {
+            showMsg(this, getString(R.string.pq_user_invited, opponent.name))
+            return
+        }
+
+        //check if player is already in game
+        if (opponent.status == Const.STATUS_WAITING &&
+            Utils.hasInvitationExpired(opponent.ts)
+        ) {
+            showMsg(this, getString(R.string.pq_user_waiting, opponent.name))
+            return
+        }
+
         FirebaseData.setItem(opponent)
-        // set my game status to "IN_GAME"
+        // set my game status to "WAITING"
         updateDbValue(
-            hashMapOf<String,Any?>().apply {
-                this["status"]=Const.STATUS_IN_GAME
-                this["id"]=""
+            hashMapOf<String, Any?>().apply {
+                this["status"] = Const.STATUS_WAITING
+                this["opponentId"] = ""
+                this["ts"] = Utils.getCurrentTimeInMillis()
             },
-            FirebaseData.getRoomStatusReference(FirebaseData.myID)
+            FirebaseData.getPlayerReference(FirebaseData.myID)
         )
 
         //set opponent game status to "IDLE"
         //save current user id to opponent's room so that he knows who is inviting him
         updateDbValue(
-            hashMapOf<String,Any?>().apply {
-                this["status"]=Const.STATUS_IDLE
-                this["id"]=FirebaseData.myID
+            hashMapOf<String, Any?>().apply {
+                this["status"] = Const.STATUS_INVITATION_RECEIVED
+                this["opponentId"] = FirebaseData.myID
+                this["ts"] = Utils.getCurrentTimeInMillis()
             },
-            FirebaseData.getRoomStatusReference(opponent.uid)
+            FirebaseData.getPlayerReference(opponent.uid)
         )
 
         //onDisconnect will be called if activity got destroyed : in that case , remove all game status of opponent
@@ -116,7 +141,7 @@ open class BaseActivity : AppCompatActivity(), FragmentEventListener {
         //VideoCallActivity.startCall(this, item.first)
     }
 
-    override fun getConnectionObject(): ConnectionLiveData = connectionLiveData
+    //override fun getConnectionObject(): ConnectionLiveData = connectionLiveData
 
 
     fun updateDbValue(map: Map<String, Any?>, ref: DocumentReference) {
@@ -157,10 +182,13 @@ open class BaseActivity : AppCompatActivity(), FragmentEventListener {
     }
 
     override fun firebaseInitGame() {
+        if (null == Firebase.auth.currentUser) {
+            return
+        }
         // initialize Firebase variables
         FirebaseData.init()
         //listen for game invitation
-        callRef = FirebaseData.getRoomIdReference(FirebaseData.myID)
+        callRef = FirebaseData.getPlayerReference(FirebaseData.myID)
     }
 
     private val callListener = object : EventListener<DocumentSnapshot> {
@@ -172,9 +200,9 @@ open class BaseActivity : AppCompatActivity(), FragmentEventListener {
 
             if (snapshot != null && snapshot.exists()) {
                 CustomLog.d(TAG, "Current data: ${snapshot.data}")
-                val room = snapshot.toObject(GameRoom::class.java)
-                if (null != room && room.id.isNotEmpty())
-                    receiveVideoCall(room.id)
+                val invitation = snapshot.toObject(Invite::class.java)
+                if (null != invitation && invitation.opponentId.isNotEmpty())
+                    receiveVideoCall(invitation.opponentId)
                 //callRef?.delete()
             } else {
                 CustomLog.d(TAG, "Current data: null")

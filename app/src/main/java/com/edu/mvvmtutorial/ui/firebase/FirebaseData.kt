@@ -19,18 +19,10 @@ object FirebaseData {
     // my UID : current user id
     var myID: String = ""
 
-    private val database = Firebase.firestore.collection(Const.TABLE_ROOM)
+    //private val database = Firebase.firestore.collection(Const.TABLE_ROOM)
 
-
-    //fun getRoomDataPath(id: String) = "$ROOM/$id/data"
-    //fun getRoomStatusPath(id: String) = "$ROOM/$id/status"
-
-    fun getRoomDataReference(id: String) = database.document(id)//.data)
-    fun getRoomStatusReference(id: String) =
-        Firebase.firestore.collection(Const.TABLE_ROOM).document(id)
-
-    fun getRoomIdReference(id: String) = database.document(id)///id")
-    fun getPlayerReference(id: String) = database.document(id)
+    fun getPlayerReference(id: String) =
+        Firebase.firestore.collection(Const.TABLE_USERS).document(id)
 
 
     fun init() {
@@ -52,22 +44,10 @@ object FirebaseData {
         }
     }
 
-    fun clearRoomIdReference() {
+    /*fun clearRoomIdReference() {
         getRoomIdReference(item.uid).delete()
-    }
+    }*/
 
-    fun updateUserData(user: User?) {
-        val mUser = FirebaseAuth.getInstance().currentUser!!
-        mUser.getIdToken(true).addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val idToken = task.result!!.token
-                // Send token to your backend via HTTPS
-                // ...
-            } else {
-                // Handle error -> task.getException();
-            }
-        }
-    }
 
     fun updateToken() {
         GlobalScope.launch(Dispatchers.IO) {

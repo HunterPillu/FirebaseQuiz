@@ -9,4 +9,10 @@
     <string name="pq_title_invite">Invite Player</string>
     <string name="foreground_message">foreground</string>
     <string name="background_message">background</string>
+
+    <!--invitation message text-->
+    <string name="pq_user_offline">%s is offline</string>
+    <string name="pq_user_in_game">%s is in another game,Please try later.</string>
+    <string name="pq_user_invited">%s is already received a invitation,Please try later.</string>
+    <string name="pq_user_waiting">%s is waiting for some other player,Please try later.</string>
 </resources>

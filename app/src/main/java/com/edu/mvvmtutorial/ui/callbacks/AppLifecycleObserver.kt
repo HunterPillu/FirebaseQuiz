@@ -30,7 +30,7 @@ class AppLifecycleObserver constructor(context: Context) : LifecycleObserver {
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onEnterForeground() {
         CustomLog.d("onEnterForeground", "onEnterForeground")
-        enterForegroundToast.showAfterCanceling(enterBackgroundToast)
+        //enterForegroundToast.showAfterCanceling(enterBackgroundToast)
         GlobalScope.launch(Dispatchers.IO) { FirebaseApi.updateOnlineStatus(true) }
 
     }
@@ -41,7 +41,7 @@ class AppLifecycleObserver constructor(context: Context) : LifecycleObserver {
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun onEnterBackground() {
         CustomLog.d("onEnterBackground", "onEnterBackground")
-        enterBackgroundToast.showAfterCanceling(enterForegroundToast)
+        //enterBackgroundToast.showAfterCanceling(enterForegroundToast)
         GlobalScope.launch(Dispatchers.IO) { FirebaseApi.updateOnlineStatus(false) }
     }
 

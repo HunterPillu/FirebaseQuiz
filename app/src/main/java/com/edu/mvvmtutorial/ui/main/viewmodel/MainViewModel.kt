@@ -43,10 +43,6 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
         )*/
     }
 
-    override fun onCleared() {
-        super.onCleared()
-    }
-
     fun getUsers(): LiveData<Resource<List<User>>> {
         return users
     }

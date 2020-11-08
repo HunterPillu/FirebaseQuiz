@@ -5,21 +5,32 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.edu.mvvmtutorial.R
 import com.edu.mvvmtutorial.data.model.User
 import com.edu.mvvmtutorial.ui.base.BaseFragment
 import com.edu.mvvmtutorial.ui.callbacks.ListItemClickListener
-import com.edu.mvvmtutorial.ui.main.adapter.PlayerAdapter
+import com.edu.mvvmtutorial.ui.main.adapter.InviteAdapter
 import com.edu.mvvmtutorial.ui.main.viewmodel.PlayerViewModel
+import com.edu.mvvmtutorial.utils.Const
+import com.edu.mvvmtutorial.utils.CustomLog
 import com.edu.mvvmtutorial.utils.Status
 import com.edu.mvvmtutorial.utils.showMsg
-import kotlinx.android.synthetic.main.custom_toolbar.*
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.custom_toolbar.view.*
 import kotlinx.android.synthetic.main.pq_fragment_invite_player.*
+import kotlinx.android.synthetic.main.pq_fragment_invite_player.view.*
 
 
 class PlayerListFragment : BaseFragment(), ListItemClickListener<Int, User> {
     private var quizId: String? = null
-    private lateinit var adapter: PlayerAdapter
+
+    private var lView: View? = null
+
+    //private lateinit var adapter: PlayerAdapter
+    private lateinit var adapter: InviteAdapter
 
     private lateinit var viewModel: PlayerViewModel
     //private var swipeRefresh: SwipeRefreshLayout? = null
@@ -35,40 +46,75 @@ class PlayerListFragment : BaseFragment(), ListItemClickListener<Int, User> {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        if (null != view) {
-            return view
+
+        if (null != lView) {
+            return lView
         }
 
-        return inflater.inflate(R.layout.pq_fragment_invite_player, container, false)
+        lView = inflater.inflate(R.layout.pq_fragment_invite_player, container, false)
+        setUpUI(lView!!)
+        setupViewModel()
+        return lView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUpUI()
-        setupViewModel()
-        setupPlayerObserver()
+
+        //setupPlayerObserver()
     }
 
-    private fun setUpUI() {
-        tvTitle.setText(R.string.pq_title_invite)
-        setRecyclerView()
+    private fun setUpUI(view: View) {
+        view.tvTitle.setText(R.string.pq_title_invite)
+        setRecyclerView(view)
     }
 
 
-    private fun setRecyclerView() {
+    private fun setRecyclerView(view: View) {
         //val rvRecords: RecyclerView? = layoutView?.findViewById<RecyclerView>(R.id.recyclerView)
-        adapter = PlayerAdapter(requireContext(), this)
-        recyclerView.adapter = adapter
+        //adapter = PlayerAdapter(requireContext(), this)
+        adapter = InviteAdapter(this, {
+            Firebase.firestore.collection(Const.TABLE_USERS)
+                .whereNotEqualTo("uid", Firebase.auth.currentUser?.uid)
+                .limit(10)
+
+            //.orderBy("name", Query.Direction.ASCENDING)
+        })
+        view.recyclerView.adapter = adapter
+        adapter.setupOnScrollListener(
+            view.recyclerView,
+            view.recyclerView.layoutManager as LinearLayoutManager
+        )
+
+        adapter.onLoadingMore = {
+            CustomLog.d(TAG, "onLoadingMore")
+        }
+        adapter.onLoadingMoreComplete = {
+            CustomLog.d(TAG, "onLoadingMoreComplete")
+        }
+        adapter.onHasLoadedAll = {
+            CustomLog.d(TAG, "onHasLoadedAll")
+        }
         //swipeRefresh = layoutView?.findViewById<View>(R.id.swipeRefresh) as SwipeRefreshLayout
         //swipeRefresh?.setOnRefreshListener(this)
     }
 
-    private fun setupPlayerObserver() {
-        connectionLiveData.observe(this) {
-            viewModel.isNetworkAvailable = it
-        }
+    override fun onStart() {
+        super.onStart()
+        adapter.clear()
+        adapter.startListening()
+    }
 
-        viewModel.getUserList().observe(this, {
+    override fun onStop() {
+        super.onStop()
+        adapter.stopListening()
+    }
+
+    private fun setupPlayerObserver() {
+        /*connectionLiveData.observe(this) {
+            viewModel.isNetworkAvailable = it
+        }*/
+
+        viewModel.getUserList().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
                     progressBar.visibility = View.GONE
@@ -106,10 +152,10 @@ class PlayerListFragment : BaseFragment(), ListItemClickListener<Int, User> {
     }
 
     private fun renderList(quizList: List<User>) {
-        adapter.apply {
+        /*adapter.apply {
             clearList()
             addList(quizList)
-        }
+        }*/
     }
 
     private fun setupViewModel() {

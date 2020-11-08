@@ -41,14 +41,10 @@ class HomeFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
         savedInstanceState: Bundle?
     ): View? {
         if (null != lView) {
-            CustomLog.e(TAG, "not null")
             return lView
-        } else {
-            CustomLog.e(TAG, "view is null null")
         }
-
-        lView = inflater.inflate(R.layout.pq_fragment_home, container, false)
         CustomLog.e(TAG, "onCreateView")
+        lView = inflater.inflate(R.layout.pq_fragment_home, container, false)
         setupUI(lView!!)
         setupViewModel()
         setupQuizObserver()
@@ -88,7 +84,7 @@ class HomeFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
     }
 
     private fun setupCourseObserver() {
-        viewModel.getCourseList().observe(this, {
+        viewModel.getCourseList().observe(viewLifecycleOwner, {
 
             CustomLog.e(TAG, "course observer ${it.status.name}")
             when (it.status) {
@@ -109,7 +105,7 @@ class HomeFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
     }
 
     private fun setupQuizObserver() {
-        viewModel.getQuizList().observe(this, {
+        viewModel.getQuizList().observe(viewLifecycleOwner, {
             CustomLog.e(TAG, "quiz observer ${it.status.name}")
             when (it.status) {
                 Status.SUCCESS -> {
