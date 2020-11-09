@@ -1,17 +1,22 @@
 package com.edu.mvvmtutorial.data.api
 
 import com.edu.mvvmtutorial.data.model.*
+import com.edu.mvvmtutorial.ui.firebase.FirebaseData
 import com.edu.mvvmtutorial.utils.Const
 import com.edu.mvvmtutorial.utils.CustomLog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 
 object FirebaseApi {
@@ -84,15 +89,20 @@ object FirebaseApi {
         }
     }
 
-
-    // update presence of user firebase
-    suspend fun updateUserField(map: Map<String, Any?>) {
+    // update field of user firebase
+    suspend fun updateUserFieldById(uid: String, map: Map<String, Any?>) {
         updateDbValue(
             map,
             Firebase.firestore
                 .collection(Const.TABLE_USERS)
-                .document(Firebase.auth.currentUser?.uid!!)
+                .document(uid)
         )
+    }
+
+
+    // update field of user firebase
+    suspend fun updateUserField(map: Map<String, Any?>) {
+        updateUserFieldById(FirebaseAuth.getInstance().currentUser!!.uid, map)
     }
 
 
@@ -199,10 +209,96 @@ object FirebaseApi {
         }
     }
 
-    /*suspend fun createRoom(uid: String) {
+
+    @ExperimentalCoroutinesApi
+    suspend fun listenGameRoomChange(uid: String): Flow<GameRoom?> {
+        return Firebase.firestore
+            .collection(Const.TABLE_ROOM).document(uid)
+            .getDataFlow { querySnapshot ->
+                querySnapshot?.toObject()
+            }
+    }
+
+    @ExperimentalCoroutinesApi
+    suspend fun CollectionReference.getQuerySnapshotFlow(): Flow<QuerySnapshot?> {
+        return callbackFlow {
+            val listenerRegistration =
+                addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                    if (firebaseFirestoreException != null) {
+                        cancel(
+                            message = "error fetching collection data at path - $path",
+                            cause = firebaseFirestoreException
+                        )
+                        return@addSnapshotListener
+                    }
+                    offer(querySnapshot)
+                }
+            awaitClose {
+                CustomLog.d(TAG, "cancelling the listener on collection at path - $path")
+                listenerRegistration.remove()
+            }
+        }
+    }
+
+    @ExperimentalCoroutinesApi
+    suspend fun <T> CollectionReference.getDataFlow(mapper: (QuerySnapshot?) -> T): Flow<T> {
+        return getQuerySnapshotFlow()
+            .map {
+                return@map mapper(it)
+            }
+    }
+
+    @ExperimentalCoroutinesApi
+    suspend fun DocumentReference.getQuerySnapshotFlow(): Flow<DocumentSnapshot?> {
+        return callbackFlow {
+            val listenerRegistration =
+                addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                    if (firebaseFirestoreException != null) {
+                        cancel(
+                            message = "error fetching collection data at path - $path",
+                            cause = firebaseFirestoreException
+                        )
+                        return@addSnapshotListener
+                    }
+                    offer(querySnapshot)
+                }
+            awaitClose {
+                CustomLog.d(TAG, "cancelling the listener on collection at path - $path")
+                listenerRegistration.remove()
+            }
+        }
+    }
+
+    @ExperimentalCoroutinesApi
+    suspend fun <T> DocumentReference.getDataFlow(mapper: (DocumentSnapshot?) -> T): Flow<T> {
+        return getQuerySnapshotFlow()
+            .map {
+                return@map mapper(it)
+            }
+    }
+
+    //create room with creator user id
+    suspend fun createRoom(room: GameRoom) {
         Firebase.firestore
-            .collection(Const.TABLE_ROOM).document(uid).set(GameRoom())
+            .collection(Const.TABLE_ROOM).document(room.creatorId).set(room)
             .await()
-    }*/
+    }
+
+    suspend fun updateRoomField(roomId: String, field: String, value: Any?) {
+        val map = hashMapOf<String, Any?>()
+        map[field] = value
+        updateDbValue(
+            map,
+            Firebase.firestore
+                .collection(Const.TABLE_ROOM)
+                .document(roomId)
+        )
+    }
+
+    suspend fun deleteRoom(roomId: String) {
+        Firebase.firestore
+            .collection(Const.TABLE_ROOM)
+            .document(roomId).delete().await()
+    }
 
 }

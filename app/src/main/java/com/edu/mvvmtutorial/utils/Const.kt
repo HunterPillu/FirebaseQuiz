@@ -52,10 +52,11 @@ object Const {
 
     //Game status
     const val STATUS_IDLE = 0
-    const val STATUS_WAITING = 2
     const val STATUS_REJECT = 1
+    const val STATUS_WAITING = 2
     const val STATUS_IN_GAME = 3
     const val STATUS_INVITATION_RECEIVED = 4
+    const val STATUS_ACCEPTED = 5
 
     const val CAN_REQUEST_IF_OFFLINE = true
 }

@@ -3,6 +3,7 @@ package com.edu.mvvmtutorial.ui.base
 import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.edu.mvvmtutorial.data.model.Quiz
 import com.edu.mvvmtutorial.data.model.User
 import com.edu.mvvmtutorial.ui.callbacks.FragmentEventListener
 import com.edu.mvvmtutorial.utils.ConnectionLiveData
@@ -43,8 +44,8 @@ open class BaseFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
 
-    fun sendGameInvite(item: User) {
-        listener.onInviteOpponent(item)
+    fun sendGameInvite(item: User,quizId: String) {
+        listener.onInviteOpponent(item,quizId)
     }
 
     fun firebaseInitGame() {

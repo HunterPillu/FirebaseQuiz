@@ -8,6 +8,7 @@ import com.edu.mvvmtutorial.data.model.Invite
 import com.edu.mvvmtutorial.data.model.User
 import com.edu.mvvmtutorial.ui.callbacks.FragmentEventListener
 import com.edu.mvvmtutorial.ui.firebase.FirebaseData
+import com.edu.mvvmtutorial.ui.main.view.dialog.InvitationDialog
 import com.edu.mvvmtutorial.utils.Const
 import com.edu.mvvmtutorial.utils.CustomLog
 import com.edu.mvvmtutorial.utils.Utils
@@ -83,7 +84,7 @@ open class BaseActivity : AppCompatActivity(), FragmentEventListener {
 
     //Firebase game listeners
 
-    override fun onInviteOpponent(opponent: User) {
+    override fun onInviteOpponent(opponent: User, quizId: String) {
         //check for valid invite
 
         //can invite if player offline
@@ -98,6 +99,7 @@ open class BaseActivity : AppCompatActivity(), FragmentEventListener {
             return
         }
 
+        //check if someone else has already requested a invitation
         if (opponent.status == Const.STATUS_INVITATION_RECEIVED
             && Utils.hasInvitationExpired(opponent.ts)
         ) {
@@ -138,7 +140,17 @@ open class BaseActivity : AppCompatActivity(), FragmentEventListener {
         //onDisconnect will be called if activity got destroyed : in that case , remove all game status of opponent
         //todo : remove opponent data on disconnect
         //FirebaseData.getRoomIdReference(opponent.uid).onDisconnect().removeValue()
-        //VideoCallActivity.startCall(this, item.first)
+        showInvitedDialog(opponent, quizId)
+    }
+
+    private fun showInvitedDialog(opponent: User, quizId: String) {
+        val dialog = InvitationDialog.newInstance(opponent, quizId)
+        dialog.show(supportFragmentManager, dialog.tag)
+    }
+
+    private fun showInviteResponseDialog(uid: String) {
+        val dialog = InvitationDialog.newInstance(uid)
+        dialog.show(supportFragmentManager, dialog.tag)
     }
 
     //override fun getConnectionObject(): ConnectionLiveData = connectionLiveData
@@ -158,15 +170,11 @@ open class BaseActivity : AppCompatActivity(), FragmentEventListener {
         }
     }
 
-    fun receiveVideoCall(key: String) {
+    fun onInvitationReceived(key: String) {
         //show invitation dialog
-        showMsg(this, "receiveVideoCall $key")
-        //VideoCallActivity.receiveCall(this, key)
+        CustomLog.d(TAG, "receive Invitation from $key")
+        showInviteResponseDialog(key)
     }
-
-    /*override fun onStartCallClicked(item: Pair<String, User?>) {
-        startVideoCall(item)
-    }*/
 
     override fun onResume() {
         super.onResume()
@@ -189,6 +197,7 @@ open class BaseActivity : AppCompatActivity(), FragmentEventListener {
         FirebaseData.init()
         //listen for game invitation
         callRef = FirebaseData.getPlayerReference(FirebaseData.myID)
+        dataListener = callRef?.addSnapshotListener(callListener)
     }
 
     private val callListener = object : EventListener<DocumentSnapshot> {
@@ -201,11 +210,11 @@ open class BaseActivity : AppCompatActivity(), FragmentEventListener {
             if (snapshot != null && snapshot.exists()) {
                 CustomLog.d(TAG, "Current data: ${snapshot.data}")
                 val invitation = snapshot.toObject(Invite::class.java)
-                if (null != invitation && invitation.opponentId.isNotEmpty())
-                    receiveVideoCall(invitation.opponentId)
-                //callRef?.delete()
-            } else {
-                CustomLog.d(TAG, "Current data: null")
+                if (null != invitation
+                    && invitation.status == Const.STATUS_INVITATION_RECEIVED
+                //&& !Utils.hasInvitationExpired(invitation.ts)
+                )
+                    onInvitationReceived(invitation.opponentId)
             }
         }
     }

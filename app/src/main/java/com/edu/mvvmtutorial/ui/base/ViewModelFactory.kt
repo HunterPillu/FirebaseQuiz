@@ -8,7 +8,7 @@ import com.edu.mvvmtutorial.data.repository.MainRepository
 import com.edu.mvvmtutorial.ui.main.viewmodel.LoginViewModel
 import com.edu.mvvmtutorial.ui.main.viewmodel.MainViewModel
 
-class ViewModelFactory : ViewModelProvider.Factory {
+open class ViewModelFactory : ViewModelProvider.Factory {
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {

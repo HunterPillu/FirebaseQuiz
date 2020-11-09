@@ -9,6 +9,9 @@ import com.edu.mvvmtutorial.data.model.Quiz
 import com.edu.mvvmtutorial.data.model.User
 import com.edu.mvvmtutorial.utils.CustomLog
 import com.edu.mvvmtutorial.utils.Resource
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class PlayerViewModel : ViewModel() {
@@ -21,6 +24,16 @@ class PlayerViewModel : ViewModel() {
 
     init {
         fetchUsers()
+    }
+
+    @ExperimentalCoroutinesApi
+    @InternalCoroutinesApi
+    fun listenForRoomEvents(uid:String){
+        viewModelScope.launch {
+            FirebaseApi.listenGameRoomChange(uid).collect {
+
+            }
+        }
     }
 
     private fun fetchUsers() {

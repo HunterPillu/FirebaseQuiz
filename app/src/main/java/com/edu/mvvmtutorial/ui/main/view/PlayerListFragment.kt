@@ -25,7 +25,7 @@ import kotlinx.android.synthetic.main.pq_fragment_invite_player.view.*
 
 
 class PlayerListFragment : BaseFragment(), ListItemClickListener<Int, User> {
-    private var quizId: String? = null
+    private lateinit var quizId: String
 
     private var lView: View? = null
 
@@ -38,7 +38,7 @@ class PlayerListFragment : BaseFragment(), ListItemClickListener<Int, User> {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        quizId = arguments?.getString("quizId")
+        quizId = arguments?.getString("quizId")!!
     }
 
     override fun onCreateView(
@@ -163,7 +163,7 @@ class PlayerListFragment : BaseFragment(), ListItemClickListener<Int, User> {
     }
 
     override fun onItemClick(type: Int, item: User) {
-        super.sendGameInvite(item)
+        super.sendGameInvite(item, quizId)
     }
 
 }
