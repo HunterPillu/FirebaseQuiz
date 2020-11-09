@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.edu.mvvmtutorial">
+    package="com.prinkal.quiz">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".ui.main.PQApp"
+        android:name="com.prinkal.quiz.ui.main.PQApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -13,12 +13,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MVVMTutorial">
         <activity
-            android:name=".ui.main.view.HomeActivity"
+            android:name="com.prinkal.quiz.ui.main.view.HomeActivity"
             android:configChanges="orientation|screenSize|keyboardHidden" />
 
-        <activity android:name=".ui.main.view.MainActivity" />
+        <activity android:name="com.prinkal.quiz.ui.main.view.MainActivity" />
         <activity
-            android:name=".ui.main.view.SplashActivity"
+            android:name="com.prinkal.quiz.ui.main.view.SplashActivity"
             android:theme="@style/SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
