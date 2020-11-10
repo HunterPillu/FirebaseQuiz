@@ -1,11 +1,13 @@
 package com.prinkal.quiz.ui.main.view.dialog
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.prinkal.quiz.R
 import com.prinkal.quiz.data.model.GameRoom
 import com.prinkal.quiz.data.model.User
@@ -14,9 +16,9 @@ import com.prinkal.quiz.ui.main.viewmodel.InviteViewModel
 import com.prinkal.quiz.utils.Const
 import com.prinkal.quiz.utils.CustomLog
 import com.prinkal.quiz.utils.Status
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.pq_bs_send_invite.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+
 
 class InvitationDialog : BottomSheetDialogFragment() {
 
@@ -83,7 +85,7 @@ class InvitationDialog : BottomSheetDialogFragment() {
             bCancel.text = getString(R.string.pq_cancel)
             tvWait.visibility = VISIBLE
             bCancel.setOnClickListener {
-                viewModel.cancelInvitation()
+                //cancel event is handled on onDismiss() func, so just dismiss the dialog on click of cancel button
                 dialog?.dismiss()
             }
 
@@ -101,10 +103,15 @@ class InvitationDialog : BottomSheetDialogFragment() {
     }
 
     private fun setupRoomObserver() {
+        if (!isInviteReceived) {
+            viewModel.getElapsedTime().observe(viewLifecycleOwner, {
+                tvWait.text = getString(R.string.pq_wait, it)
+            })
+        }
 
         viewModel.getRoom().observe(viewLifecycleOwner, {
 
-            CustomLog.e(TAG, "course observer ${it.status.name}")
+            CustomLog.e(TAG, "Quiz room observer ${it.status.name}")
             when (it.status) {
                 Status.SUCCESS -> {
                     it.data?.let { room ->
@@ -128,10 +135,21 @@ class InvitationDialog : BottomSheetDialogFragment() {
         if (isInviteReceived) {
             //tvDesc.text=getString()
         } else {
+            //check if invitation rejected by opponent
             if (room.status == Const.STATUS_REJECT) {
                 viewModel.invitationRejectedByOpponent()
                 dialog?.dismiss()
             }
+        }
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        CustomLog.e(TAG, "onDismiss")
+        if (isInviteReceived) {
+            viewModel.invitationRejectedByOpponent()
+        } else {
+            viewModel.cancelInvitation()
         }
     }
 

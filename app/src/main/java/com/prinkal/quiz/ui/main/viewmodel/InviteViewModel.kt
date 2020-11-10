@@ -1,5 +1,7 @@
 package com.prinkal.quiz.ui.main.viewmodel
 
+import android.os.CountDownTimer
+import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,10 +10,7 @@ import com.prinkal.quiz.data.api.FirebaseApi
 import com.prinkal.quiz.data.model.GameRoom
 import com.prinkal.quiz.data.model.User
 import com.prinkal.quiz.ui.firebase.FirebaseData
-import com.prinkal.quiz.utils.Const
-import com.prinkal.quiz.utils.CustomLog
-import com.prinkal.quiz.utils.Resource
-import com.prinkal.quiz.utils.Utils
+import com.prinkal.quiz.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -28,7 +27,6 @@ class InviteViewModel(private val player: User, private val quizId: String) :
         internal val TAG = InviteViewModel::class.java.name
     }
 
-    private val data = MutableLiveData<Resource<Any>>()
     private val room = MutableLiveData<Resource<GameRoom>>()
 
     init {
@@ -37,7 +35,41 @@ class InviteViewModel(private val player: User, private val quizId: String) :
             listenForOpponentResponse()
         } else {
             createRoom()
+            // start and show timer if user sent the invitation
+            startTimer()
         }
+    }
+
+
+    private val mElapsedTime = MutableLiveData<Long>()
+
+    private var mInitialTime: Long = 0
+    private var timer: CountDownTimer? = null
+
+
+    //start timer for game invitation response
+    private fun startTimer() {
+        mInitialTime = SystemClock.elapsedRealtime()
+        timer = object : CountDownTimer(Config.INVITATION_EXPIRE_TIME, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                mElapsedTime.value = millisUntilFinished / 1000
+            }
+
+            override fun onFinish() {
+                mElapsedTime.value = 0
+                room.postValue(Resource.error("", null))
+            }
+        }
+        timer?.start()
+    }
+
+    fun getElapsedTime(): LiveData<Long> {
+        return mElapsedTime
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        timer?.cancel()
     }
 
     private fun createRoom() {
@@ -48,10 +80,6 @@ class InviteViewModel(private val player: User, private val quizId: String) :
             FirebaseApi.createRoom(room)
             listenForOpponentResponse()
         }
-    }
-
-    fun getData(): LiveData<Resource<Any>> {
-        return data
     }
 
     fun getRoom(): LiveData<Resource<GameRoom>> {
@@ -77,6 +105,7 @@ class InviteViewModel(private val player: User, private val quizId: String) :
 
     fun invitationAccepted() {
         CustomLog.e(TAG, "invitationAccepted")
+
         viewModelScope.launch(Dispatchers.IO) {
             //set current user status from INVITATION_RECEIVED to IN_GAME
             val map = hashMapOf<String, Any?>()
@@ -90,8 +119,13 @@ class InviteViewModel(private val player: User, private val quizId: String) :
         }
     }
 
+    private fun cancelTimer() {
+        timer?.cancel()
+    }
+
     fun invitationRejected() {
-        CustomLog.e(TAG, "invitationRejected")
+        CustomLog.d(TAG, "invitationRejected")
+
         viewModelScope.launch(Dispatchers.IO) {
             //set current user status from INVITATION_RECEIVED to IDLE
             val map = hashMapOf<String, Any?>()
@@ -106,7 +140,10 @@ class InviteViewModel(private val player: User, private val quizId: String) :
     }
 
     fun cancelInvitation() {
-        CustomLog.e(TAG, "cancelInvitation")
+        CustomLog.d(TAG, "cancelInvitation")
+
+        cancelTimer()
+
         viewModelScope.launch(Dispatchers.IO) {
             //set current user status from WAITING to IDLE
             val map = hashMapOf<String, Any?>()
