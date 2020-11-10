@@ -1,8 +1,5 @@
 package com.prinkal.quiz.data.api
 
-import com.prinkal.quiz.data.model.*
-import com.prinkal.quiz.utils.Const
-import com.prinkal.quiz.utils.CustomLog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.*
@@ -10,6 +7,9 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.ktx.Firebase
+import com.prinkal.quiz.data.model.*
+import com.prinkal.quiz.utils.Const
+import com.prinkal.quiz.utils.CustomLog
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
@@ -211,6 +211,24 @@ object FirebaseApi {
 
     @ExperimentalCoroutinesApi
     suspend fun listenGameRoomChange(uid: String): Flow<GameRoom?> {
+        return Firebase.firestore
+            .collection(Const.TABLE_ROOM).document(uid)
+            .getDataFlow { querySnapshot ->
+                querySnapshot?.toObject()
+            }
+    }
+
+   /* @ExperimentalCoroutinesApi
+    suspend fun listenUserChange(uid: String): Flow<User?> {
+        return Firebase.firestore
+            .collection(Const.TABLE_ROOM).document(uid)
+            .getDataFlow { querySnapshot ->
+                querySnapshot?.toObject()
+            }
+    }*/
+
+    @ExperimentalCoroutinesApi
+    suspend inline fun <reified T> listenUserChange(uid: String): Flow<T?> {
         return Firebase.firestore
             .collection(Const.TABLE_ROOM).document(uid)
             .getDataFlow { querySnapshot ->

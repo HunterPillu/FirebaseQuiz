@@ -17,11 +17,15 @@ class HomeActivity : BaseActivity() {
         setContentView(R.layout.pq_activity_home)
         setupViewModel()
         setupDataObserver()
+        setupInvitationObserver()
         /*if (savedInstanceState == null) {
             CustomLog.e(TAG, "savedInstanceState")
             openRequiredFragment()
         }*/
     }
+
+    override fun fetchViewModel(): HomeActivityViewModel = viewModel
+
 
     private fun setupViewModel() {
         viewModel = ViewModelProvider(this).get(HomeActivityViewModel::class.java)
@@ -33,10 +37,8 @@ class HomeActivity : BaseActivity() {
             CustomLog.e(TAG, "data observer ${it.status.name}")
             when (it.status) {
                 Status.IDLE -> {
-                    initParent()
                     openRequiredFragment()
                 }
-
                 else -> {
                 }
             }
