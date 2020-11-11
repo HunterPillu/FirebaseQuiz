@@ -2,18 +2,15 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/bottom_sheet"
-    style="@style/Widget.MaterialComponents.CardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="@dimen/margin_full">
+    app:cardElevation="@dimen/margin_half"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/margin_full"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+        android:orientation="vertical">
 
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -30,7 +27,7 @@
                 android:layout_marginTop="@dimen/margin_full"
                 android:text="@string/pq_invitation_sent"
                 android:textColor="@color/white"
-                android:textSize="@dimen/header"
+                android:textSize="@dimen/sub_header"
                 android:textStyle="bold" />
 
             <View
@@ -43,15 +40,24 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <ProgressBar
-            android:id="@+id/pbLoader"
+            android:id="@+id/pbProgress"
             style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="-8dp"
             android:max="100"
-            android:progress="69"
-            android:visibility="gone"
-            tools:visibility="visible" />
+            android:progress="0"
+            android:visibility="visible"
+            tools:progress="40" />
+
+        <ProgressBar
+            android:id="@+id/pbLoader"
+            style="@style/Widget.AppCompat.ProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_full"
+            android:visibility="visible" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvDesc"
@@ -60,20 +66,30 @@
             android:layout_marginHorizontal="@dimen/margin_super"
             android:layout_marginTop="@dimen/margin_full"
             android:textColor="@color/text_primary"
-            android:textSize="@dimen/title"
-            tools:text="@string/pq_invitation_received_desc" />
+            android:textSize="@dimen/sub_title"
+            android:visibility="gone"
+            tools:text="@string/pq_invitation_received_desc"
+            tools:visibility="visible" />
 
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pq_grid_item_divider"
+            android:layout_marginTop="@dimen/margin_full"
+            android:background="@color/divider" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_full"
             android:gravity="end">
+
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tvWait"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_super"
+                android:layout_marginTop="@dimen/margin_full"
                 android:textColor="@color/text_secondary"
                 android:textSize="@dimen/sub_title"
                 android:visibility="gone"
@@ -86,7 +102,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_full"
-                android:layout_marginTop="@dimen/margin_super"
+                android:layout_marginTop="@dimen/margin_full"
                 android:text="@string/pq_accept"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
@@ -101,7 +117,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/margin_full"
-                android:layout_marginTop="@dimen/margin_super"
+                android:layout_marginTop="@dimen/margin_full"
                 android:text="@string/pq_cancel"
                 android:textAllCaps="false"
                 android:textColor="@color/colorPrimary"
@@ -110,13 +126,6 @@
 
 
         </androidx.appcompat.widget.LinearLayoutCompat>
-
-
-        <!-- <View
-             android:layout_width="match_parent"
-             android:layout_height="@dimen/grid_item_divider"
-             android:layout_marginStart="56dp"
-             android:background="@color/divider" />-->
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </com.google.android.material.card.MaterialCardView>

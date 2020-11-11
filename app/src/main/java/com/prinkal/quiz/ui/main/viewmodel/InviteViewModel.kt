@@ -1,7 +1,6 @@
 package com.prinkal.quiz.ui.main.viewmodel
 
 import android.os.CountDownTimer
-import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -21,6 +20,9 @@ class InviteViewModel(private val player: User, private val quizId: String) :
     ViewModel() {
 
     private var isInvitationReceived: Boolean = false
+    private val mElapsedTime = MutableLiveData<Long>()
+
+    private var timer: CountDownTimer? = null
 
 
     companion object {
@@ -30,6 +32,7 @@ class InviteViewModel(private val player: User, private val quizId: String) :
     private val room = MutableLiveData<Resource<GameRoom>>()
 
     init {
+        room.postValue(Resource.loading(null))
         isInvitationReceived = quizId == ""
         if (isInvitationReceived) {
             listenForOpponentResponse()
@@ -41,15 +44,8 @@ class InviteViewModel(private val player: User, private val quizId: String) :
     }
 
 
-    private val mElapsedTime = MutableLiveData<Long>()
-
-    private var mInitialTime: Long = 0
-    private var timer: CountDownTimer? = null
-
-
     //start timer for game invitation response
     private fun startTimer() {
-        mInitialTime = SystemClock.elapsedRealtime()
         timer = object : CountDownTimer(Config.INVITATION_EXPIRE_TIME, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 mElapsedTime.value = millisUntilFinished / 1000
@@ -69,14 +65,23 @@ class InviteViewModel(private val player: User, private val quizId: String) :
 
     override fun onCleared() {
         super.onCleared()
-        timer?.cancel()
+        cancelTimer()
     }
 
     private fun createRoom() {
         //create room if this user is inviter
 
         viewModelScope.launch(Dispatchers.IO) {
-            val room = GameRoom(FirebaseData.myID, "", Utils.getCurrentTimeInMillis())
+            val creator = FirebaseApi.getUserById(FirebaseData.myID)!!
+
+            val room = GameRoom(
+                creator.uid,
+                creator.name,
+                player.uid,
+                player.name,
+                quizId,
+                Utils.getCurrentTimeInMillis()
+            )
             FirebaseApi.createRoom(room)
             listenForOpponentResponse()
         }
@@ -105,7 +110,7 @@ class InviteViewModel(private val player: User, private val quizId: String) :
 
     fun invitationAccepted() {
         CustomLog.e(TAG, "invitationAccepted")
-
+        room.postValue(Resource.loading(null))
         viewModelScope.launch(Dispatchers.IO) {
             //set current user status from INVITATION_RECEIVED to IN_GAME
             val map = hashMapOf<String, Any?>()

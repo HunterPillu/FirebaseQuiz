@@ -18,12 +18,6 @@ import kotlinx.coroutines.launch
  */
 class AppLifecycleObserver constructor(context: Context) : LifecycleObserver {
 
-    private val enterForegroundToast =
-        Toast.makeText(context, context.getString(R.string.foreground_message), Toast.LENGTH_SHORT)
-
-    private val enterBackgroundToast =
-        Toast.makeText(context, context.getString(R.string.background_message), Toast.LENGTH_SHORT)
-
     /**
      * Shows foreground {@link android.widget.Toast} after attempting to cancel the background one.
      */
@@ -43,10 +37,5 @@ class AppLifecycleObserver constructor(context: Context) : LifecycleObserver {
         CustomLog.d("onEnterBackground", "onEnterBackground")
         //enterBackgroundToast.showAfterCanceling(enterForegroundToast)
         GlobalScope.launch(Dispatchers.IO) { FirebaseApi.updateOnlineStatus(false) }
-    }
-
-    private fun Toast.showAfterCanceling(toastToCancel: Toast) {
-        toastToCancel.cancel()
-        this.show()
     }
 }

@@ -4,6 +4,7 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
@@ -13,6 +14,7 @@ import com.prinkal.quiz.data.model.GameRoom
 import com.prinkal.quiz.data.model.User
 import com.prinkal.quiz.ui.base.InviteViewModelFactory
 import com.prinkal.quiz.ui.main.viewmodel.InviteViewModel
+import com.prinkal.quiz.utils.Config
 import com.prinkal.quiz.utils.Const
 import com.prinkal.quiz.utils.CustomLog
 import com.prinkal.quiz.utils.Status
@@ -66,16 +68,15 @@ class InvitationDialog : BottomSheetDialogFragment() {
         if (isInviteReceived) {
             //show accept/reject dialog
             tvTitle.text = getString(R.string.pq_invitation_received)
-            tvDesc.text = getString(R.string.pq_invitation_received_desc)
             bCancel.text = getString(R.string.pq_reject)
-            bAccept.visibility = VISIBLE
 
             bAccept.setOnClickListener {
                 viewModel.invitationAccepted()
             }
             bCancel.setOnClickListener {
-                viewModel.invitationRejected()
+                //cancel event is handled on onDismiss() func, so just dismiss the dialog on click of cancel button
                 dialog?.dismiss()
+
             }
 
         } else {
@@ -106,6 +107,8 @@ class InvitationDialog : BottomSheetDialogFragment() {
         if (!isInviteReceived) {
             viewModel.getElapsedTime().observe(viewLifecycleOwner, {
                 tvWait.text = getString(R.string.pq_wait, it)
+                pbProgress.progress =
+                    100 - ((it * 100 * 1000) / Config.INVITATION_EXPIRE_TIME).toInt()
             })
         }
 
@@ -122,6 +125,12 @@ class InvitationDialog : BottomSheetDialogFragment() {
                 Status.ERROR -> {
                     dialog?.dismiss()
                 }
+                Status.LOADING -> {
+                    pbLoader.visibility = VISIBLE
+                    //pbProgress.visibility = GONE
+                    bAccept.visibility = GONE
+                    tvDesc.visibility = GONE
+                }
                 else -> {
                     //idle
                 }
@@ -132,14 +141,31 @@ class InvitationDialog : BottomSheetDialogFragment() {
     }
 
     private fun updateView(room: GameRoom) {
+
+        if (room.status == Const.STATUS_ACCEPTED) {
+            //just dismiss the dialog , reject event is already handled on onDismiss()
+            CustomLog.e(TAG, "STATUS_ACCEPTED")
+            dialog?.dismiss()
+            openNextScreen()
+            return
+        }
+
+        pbLoader.visibility = GONE
+
+
+
         if (isInviteReceived) {
-            //tvDesc.text=getString()
+
+            tvDesc.text = getString(R.string.pq_invitation_received_desc, room.playerAName)
+            bAccept.visibility = VISIBLE
         } else {
+            tvDesc.text = getString(R.string.pq_invitation_sent_desc, room.playerBName)
             //check if invitation rejected by opponent
             if (room.status == Const.STATUS_REJECT) {
-                viewModel.invitationRejectedByOpponent()
+                //just dismiss the dialog , reject event is already handled on onDismiss()
                 dialog?.dismiss()
             }
+
         }
     }
 
@@ -147,7 +173,7 @@ class InvitationDialog : BottomSheetDialogFragment() {
         super.onDismiss(dialog)
         CustomLog.e(TAG, "onDismiss")
         if (isInviteReceived) {
-            viewModel.invitationRejectedByOpponent()
+            viewModel.invitationRejected()
         } else {
             viewModel.cancelInvitation()
         }

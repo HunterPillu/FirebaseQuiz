@@ -49,14 +49,14 @@ class HomeActivityViewModel : ViewModel() {
         // initialize Firebase variables
         FirebaseData.init()
         //listen for game invitation
-        listenForOpponentResponse()
+        listenForInvitation()
         //callRef = FirebaseData.getPlayerReference(FirebaseData.myID)
         //dataListener = callRef?.addSnapshotListener(callListener)
     }
 
     //listen GAME_STATUS change on USER table
     @ExperimentalCoroutinesApi
-    private fun listenForOpponentResponse() {
+    private fun listenForInvitation() {
         viewModelScope.launch(Dispatchers.IO) {
             FirebaseApi.listenUserChange<Invite>(FirebaseData.myID).collect {
                 if (null != it) {
@@ -111,6 +111,9 @@ class HomeActivityViewModel : ViewModel() {
             return
         }
 
+        //show dialog
+        invitation.postValue(Invitation.sendInvite(opponent, quizId))
+
         FirebaseData.setItem(opponent)
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -124,7 +127,7 @@ class HomeActivityViewModel : ViewModel() {
                 FirebaseData.getPlayerReference(FirebaseData.myID)
             )
 
-            //set opponent game status to "IDLE"
+            //set opponent game status to "STATUS_INVITATION_RECEIVED"
             //save current user id to opponent's room so that he knows who is inviting him
             FirebaseApi.updateDbValue(
                 hashMapOf<String, Any?>().apply {
@@ -135,7 +138,7 @@ class HomeActivityViewModel : ViewModel() {
                 FirebaseData.getPlayerReference(opponent.uid)
             )
 
-            invitation.postValue(Invitation.sendInvite(opponent, quizId))
+
         }
     }
 

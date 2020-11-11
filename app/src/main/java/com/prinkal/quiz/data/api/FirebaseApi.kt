@@ -69,6 +69,15 @@ object FirebaseApi {
         }
     }
 
+    //fetch user by given uid
+    suspend fun getUserById(uid: String): User? {
+        return Firebase.firestore
+            .collection(Const.TABLE_USERS)
+            .document(uid)
+            .get()
+            .await().toObject()
+    }
+
     suspend fun updateFirebaseToken() {
         updateUserField(
             hashMapOf<String, Any?>().apply {
@@ -218,14 +227,14 @@ object FirebaseApi {
             }
     }
 
-   /* @ExperimentalCoroutinesApi
-    suspend fun listenUserChange(uid: String): Flow<User?> {
-        return Firebase.firestore
-            .collection(Const.TABLE_ROOM).document(uid)
-            .getDataFlow { querySnapshot ->
-                querySnapshot?.toObject()
-            }
-    }*/
+    /* @ExperimentalCoroutinesApi
+     suspend fun listenUserChange(uid: String): Flow<User?> {
+         return Firebase.firestore
+             .collection(Const.TABLE_ROOM).document(uid)
+             .getDataFlow { querySnapshot ->
+                 querySnapshot?.toObject()
+             }
+     }*/
 
     @ExperimentalCoroutinesApi
     suspend inline fun <reified T> listenUserChange(uid: String): Flow<T?> {
@@ -297,7 +306,7 @@ object FirebaseApi {
     //create room with creator user id
     suspend fun createRoom(room: GameRoom) {
         Firebase.firestore
-            .collection(Const.TABLE_ROOM).document(room.creatorId).set(room)
+            .collection(Const.TABLE_ROOM).document(room.playerAId).set(room)
             .await()
     }
 
@@ -317,5 +326,6 @@ object FirebaseApi {
             .collection(Const.TABLE_ROOM)
             .document(roomId).delete().await()
     }
+
 
 }

@@ -7,8 +7,6 @@
     <string name="pq_all">All</string>
     <string name="upload">Upload</string>
     <string name="pq_title_invite">Invite Player</string>
-    <string name="foreground_message">foreground</string>
-    <string name="background_message">background</string>
 
     <!--invitation message text-->
     <string name="pq_user_offline">%s is offline</string>
@@ -20,8 +18,8 @@
     <string name="pq_cancel">Cancel</string>
     <string name="pq_invitation_sent">Invitation Sent</string>
     <string name="pq_invitation_received">Invitation Received</string>
-    <string name="pq_invitation_sent_desc">Invitation sent. Waiting for <b>%s</b> to join…</string>
-    <string name="pq_invitation_received_desc">A new invitation received. Want to "Accept" and join</string>
-    <string name="pq_reject">Rejcet</string>
+    <string name="pq_invitation_sent_desc">A invitation sent to %s. Waiting for his/her response</string>
+    <string name="pq_invitation_received_desc">%s has sent you a invitation. Want to accept?</string>
+    <string name="pq_reject">Reject</string>
     <string name="pq_accept">Accept</string>
 </resources>
