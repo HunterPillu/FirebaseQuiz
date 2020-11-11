@@ -41,13 +41,6 @@ object Const {
     const val TABLE_COURSE = "course"
     const val TABLE_ROOM = "room"
 
-    //FIRESTORE SUB-COLLECTION
-    const val SUB_BOOKMARK_VIDEOS = "bookmark_videos"
-
-    // PAGINATION
-    const val LIMIT: Long = 30
-
-    const val LIMIT_VIDEOS: Long = 10
 
 
     //Game status
@@ -57,6 +50,8 @@ object Const {
     const val STATUS_IN_GAME = 3
     const val STATUS_INVITATION_RECEIVED = 4
     const val STATUS_ACCEPTED = 5
+    const val STATUS_PREPARING = 6
+    const val STATUS_PREPARED = 7
 
     const val CAN_REQUEST_IF_OFFLINE = true
 }

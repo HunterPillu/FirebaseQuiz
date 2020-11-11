@@ -26,16 +26,6 @@ class PlayerViewModel : ViewModel() {
         fetchUsers()
     }
 
-    @ExperimentalCoroutinesApi
-    @InternalCoroutinesApi
-    fun listenForRoomEvents(uid:String){
-        viewModelScope.launch {
-            FirebaseApi.listenGameRoomChange(uid).collect {
-
-            }
-        }
-    }
-
     private fun fetchUsers() {
         if (isNetworkAvailable) return
         CustomLog.d(TAG, "detching data")

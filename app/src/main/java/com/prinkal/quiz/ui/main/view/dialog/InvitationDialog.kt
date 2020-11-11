@@ -13,6 +13,7 @@ import com.prinkal.quiz.R
 import com.prinkal.quiz.data.model.GameRoom
 import com.prinkal.quiz.data.model.User
 import com.prinkal.quiz.ui.base.InviteViewModelFactory
+import com.prinkal.quiz.ui.main.view.MultiQuizFragment
 import com.prinkal.quiz.ui.main.viewmodel.InviteViewModel
 import com.prinkal.quiz.utils.Config
 import com.prinkal.quiz.utils.Const
@@ -140,19 +141,19 @@ class InvitationDialog : BottomSheetDialogFragment() {
 
     }
 
+    private var invitationAccepted = false
     private fun updateView(room: GameRoom) {
 
         if (room.status == Const.STATUS_ACCEPTED) {
             //just dismiss the dialog , reject event is already handled on onDismiss()
             CustomLog.e(TAG, "STATUS_ACCEPTED")
+            invitationAccepted = true
+            //just dismiss the dialog , next screen logic is added on onDismiss()
             dialog?.dismiss()
-            openNextScreen()
             return
         }
 
         pbLoader.visibility = GONE
-
-
 
         if (isInviteReceived) {
 
@@ -172,6 +173,10 @@ class InvitationDialog : BottomSheetDialogFragment() {
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         CustomLog.e(TAG, "onDismiss")
+        if (invitationAccepted) {
+            openNextScreen()
+            return
+        }
         if (isInviteReceived) {
             viewModel.invitationRejected()
         } else {
@@ -180,6 +185,11 @@ class InvitationDialog : BottomSheetDialogFragment() {
     }
 
     private fun openNextScreen() {
+
+        val roomId = viewModel.getRoomId()
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.container, MultiQuizFragment.newInstance(roomId))
+            .addToBackStack(null).commit()
         /*val intent: Intent = when {
             FirebaseAuth.getInstance().currentUser != null -> {
                 Intent(context, MainActivity::class.java)

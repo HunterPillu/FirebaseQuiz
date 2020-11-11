@@ -175,7 +175,7 @@ object FirebaseApi {
 
         val quizRef = Firebase.firestore
             .collection(Const.TABLE_QUIZ)
-            .document(quizId).collection(Const.TABLE_QUESTION).limit(10)
+            .document(quizId).collection(Const.TABLE_QUESTION)
 
         return try {
             val data = quizRef.get().await()
@@ -220,11 +220,13 @@ object FirebaseApi {
 
     @ExperimentalCoroutinesApi
     suspend fun listenGameRoomChange(uid: String): Flow<GameRoom?> {
+
         return Firebase.firestore
             .collection(Const.TABLE_ROOM).document(uid)
             .getDataFlow { querySnapshot ->
                 querySnapshot?.toObject()
             }
+
     }
 
     /* @ExperimentalCoroutinesApi
@@ -239,7 +241,7 @@ object FirebaseApi {
     @ExperimentalCoroutinesApi
     suspend inline fun <reified T> listenUserChange(uid: String): Flow<T?> {
         return Firebase.firestore
-            .collection(Const.TABLE_ROOM).document(uid)
+            .collection(Const.TABLE_USERS).document(uid)
             .getDataFlow { querySnapshot ->
                 querySnapshot?.toObject()
             }
@@ -327,5 +329,15 @@ object FirebaseApi {
             .document(roomId).delete().await()
     }
 
-
+    suspend fun updateQuizOnRoom(roomId: String, quiz: Quiz?, status: Int) {
+        val map = hashMapOf<String, Any?>()
+        map["quiz"] = quiz
+        map["status"] = status
+        updateDbValue(
+            map,
+            Firebase.firestore
+                .collection(Const.TABLE_ROOM)
+                .document(roomId)
+        )
+    }
 }

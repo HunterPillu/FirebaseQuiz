@@ -73,7 +73,7 @@ class CustomLog {
         }
 
         fun e(tag: String, msg: Exception) {
-            Log.d(tag, msg.localizedMessage)
+            Log.e(tag, msg.localizedMessage)
             sendToCrashlytics(msg)
         }
 

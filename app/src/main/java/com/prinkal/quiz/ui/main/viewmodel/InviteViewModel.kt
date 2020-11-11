@@ -21,7 +21,6 @@ class InviteViewModel(private val player: User, private val quizId: String) :
 
     private var isInvitationReceived: Boolean = false
     private val mElapsedTime = MutableLiveData<Long>()
-
     private var timer: CountDownTimer? = null
 
 
@@ -92,18 +91,23 @@ class InviteViewModel(private val player: User, private val quizId: String) :
     }
 
 
+    //listen GameRoom for opponent response
     @ExperimentalCoroutinesApi
     private fun listenForOpponentResponse() {
         val uid = if (isInvitationReceived) player.uid else FirebaseData.myID
         viewModelScope.launch(Dispatchers.IO) {
-            FirebaseApi.listenGameRoomChange(uid).collect {
-                CustomLog.e(TAG, "${it == null}")
-                if (null != it) {
-                    CustomLog.e(TAG, it.toString())
-                    room.postValue(Resource.success(it))
-                } else {
-                    room.postValue(Resource.error("", null))
+            try {
+                FirebaseApi.listenGameRoomChange(uid).collect {
+                    CustomLog.e(TAG, "${it == null}")
+                    if (null != it) {
+                        CustomLog.e(TAG, it.toString())
+                        room.postValue(Resource.success(it))
+                    } else {
+                        room.postValue(Resource.error("", null))
+                    }
                 }
+            } catch (e: Exception) {
+                CustomLog.e(TAG, e)
             }
         }
     }
@@ -178,6 +182,10 @@ class InviteViewModel(private val player: User, private val quizId: String) :
             // delete room
             FirebaseApi.deleteRoom(FirebaseData.myID)
         }
+    }
+
+    fun getRoomId(): String {
+        return if (isInvitationReceived) player.uid else FirebaseData.myID
     }
 
 }

@@ -32,4 +32,58 @@
     <style name="AppModalStyle" parent="Widget.MaterialComponents.BottomSheet.Modal">
         <item name="android:background">@drawable/pq_dialog_shape</item>
     </style>
+
+
+    <style name="ShapeAppearanceOverlay.App.CornerSize50Percent" parent="ShapeAppearanceOverlay.MaterialComponents.MaterialCalendar.Day">
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay.App.SelectedCornerRadius" parent="">
+        <item name="cornerSizeTopRight">75dp</item>
+        <item name="cornerFamilyTopRight">rounded</item>
+        <item name="cornerSizeBottomLeft">75dp</item>
+        <item name="cornerFamilyBottomLeft">rounded</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay.PlayerA">
+        <item name="cornerSizeBottomLeft">@dimen/pq_rounded_player_multi_quiz</item>
+        <item name="cornerFamilyBottomLeft">rounded</item>
+
+        <item name="cornerSizeTopLeft">@dimen/pq_rounded_player_multi_quiz</item>
+        <item name="cornerFamilyTopLeft">rounded</item>
+
+        <item name="cornerSizeBottomRight">@dimen/pq_rounded_player_multi_quiz</item>
+        <item name="cornerFamilyBottomRight">rounded</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay.PlayerB">
+        <item name="cornerSizeTopRight">@dimen/pq_rounded_player_multi_quiz</item>
+        <item name="cornerFamilyTopRight">rounded</item>
+
+        <item name="cornerSizeTopLeft">@dimen/pq_rounded_player_multi_quiz</item>
+        <item name="cornerFamilyTopLeft">rounded</item>
+
+        <item name="cornerSizeBottomRight">@dimen/pq_rounded_player_multi_quiz</item>
+        <item name="cornerFamilyBottomRight">rounded</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay.App.SelectedCornerCut" parent="">
+        <item name="cornerSizeTopRight">75dp</item>
+        <item name="cornerFamilyTopRight">cut</item>
+        <item name="cornerSizeBottomLeft">75dp</item>
+        <item name="cornerFamilyBottomLeft">cut</item>
+    </style>
+
+    <style name="text_question">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:padding">@dimen/margin_medium</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/pq_size_question</item>
+        <item name="android:textColor">@color/pq_question_text</item>
+    </style>
+
+    <style name="text_option" parent="text_question"></style>
+
+
 </resources>

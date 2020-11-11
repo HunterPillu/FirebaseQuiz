@@ -10,4 +10,5 @@ data class Quiz(
     var disabled: Boolean = false,
     var winningScore: Int = 0,
     var questions: List<Question>? = null
+
 )

@@ -5,4 +5,12 @@
     <dimen name="pq_grid_item_divider">0.5dp</dimen>
     <dimen name="pq_size_online_status">10dp</dimen>
     <dimen name="pq_size_user_item_img">48dp</dimen>
+    <dimen name="pq_size_player_multi_quiz">72dp</dimen>
+    <dimen name="pq_rounded_player_multi_quiz">36dp</dimen>
+    <dimen name="pq_padding_player_name">8dp</dimen>
+    <dimen name="pq_stroke_player">2dp</dimen>
+    <dimen name="pq_size_header_multi_quiz">120dp</dimen>
+    <dimen name="pq_size_versus">48dp</dimen>
+
+    <dimen name="pq_size_question">@dimen/body_1</dimen>
 </resources>
