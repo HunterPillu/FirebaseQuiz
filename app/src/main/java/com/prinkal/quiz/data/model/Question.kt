@@ -14,4 +14,16 @@ data class Question(
     var powerScore: Int = 0,
     var question: String = "",
     var time: Int = 10,
-)
+) {
+
+    // provide options as shuffled list so that every time options will be different place eg A,B,C,D
+    fun getOptionAsShuffledList(): List<String> {
+        return arrayListOf<String>().apply {
+            add(optA)
+            add(optB)
+            add(optC)
+            add(optD)
+        }.shuffled()
+
+    }
+}

@@ -78,13 +78,13 @@ class CustomLog {
         }
 
         fun e(tag: String, msg: Throwable) {
-            Log.d(tag, msg.localizedMessage)
+            Log.e(tag, msg.localizedMessage)
             msg.printStackTrace()
             sendToCrashlytics(msg)
         }
 
         fun e(tag: String, error: String, msg: Throwable) {
-            Log.d(tag, "$error ${msg.localizedMessage}")
+            Log.e(tag, "$error ${msg.localizedMessage}")
             sendToCrashlytics(msg)
         }
 

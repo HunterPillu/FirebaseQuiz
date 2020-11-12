@@ -175,7 +175,7 @@ object FirebaseApi {
 
         val quizRef = Firebase.firestore
             .collection(Const.TABLE_QUIZ)
-            .document(quizId).collection(Const.TABLE_QUESTION)
+            .document(quizId).collection(Const.TABLE_QUESTION).limit(10)
 
         return try {
             val data = quizRef.get().await()
@@ -220,13 +220,11 @@ object FirebaseApi {
 
     @ExperimentalCoroutinesApi
     suspend fun listenGameRoomChange(uid: String): Flow<GameRoom?> {
-
         return Firebase.firestore
             .collection(Const.TABLE_ROOM).document(uid)
             .getDataFlow { querySnapshot ->
                 querySnapshot?.toObject()
             }
-
     }
 
     /* @ExperimentalCoroutinesApi

@@ -5,12 +5,15 @@
     android:id="@+id/cvHeader"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="@dimen/margin_quarter"
     android:visibility="gone"
+    app:cardElevation="@dimen/margin_quarter"
     tools:visibility="visible">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/pq_size_header_multi_quiz">
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_half">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/ivPlayerA"
@@ -27,19 +30,89 @@
             style="@style/Widget.MaterialComponents.TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/ivPlayerA"
             android:layout_marginEnd="@dimen/margin_full"
-            android:layout_toEndOf="@+id/ivPlayerA"
-            android:background="@color/colorPrimary"
             android:padding="@dimen/pq_padding_player_name"
-            android:textColor="@color/white"
-            android:textStyle="bold"
+            android:textColor="@color/text_primary"
             tools:text="Player A" />
 
         <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivVs"
             android:layout_width="@dimen/pq_size_versus"
             android:layout_height="@dimen/pq_size_versus"
             android:layout_centerInParent="true"
             app:srcCompat="@drawable/pq_versus" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvTimer"
+            style="@style/Widget.MaterialComponents.TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ivVs"
+            android:layout_centerHorizontal="true"
+            android:layout_marginHorizontal="@dimen/margin_full"
+            android:layout_marginTop="36dp"
+            android:drawableStart="@drawable/pq_clock_24"
+            android:drawablePadding="@dimen/margin_mini"
+            android:gravity="center"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/body_2"
+            app:drawableTint="@color/colorPrimary"
+            tools:text="00:00" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvPlayerAScore"
+            style="@style/Widget.MaterialComponents.TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginHorizontal="@dimen/margin_full"
+            android:layout_toStartOf="@id/ivVs"
+            android:layout_toEndOf="@+id/ivPlayerA"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/title"
+            android:textStyle="bold"
+            tools:text="490" />
+
+        <com.google.android.material.textview.MaterialTextView
+            style="@style/Widget.MaterialComponents.TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/tvPlayerAScore"
+            android:layout_marginHorizontal="@dimen/margin_full"
+            android:layout_toStartOf="@id/ivVs"
+            android:layout_toEndOf="@+id/ivPlayerA"
+            android:text="@string/pq_score"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/body_2" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvPlayerBScore"
+            style="@style/Widget.MaterialComponents.TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginHorizontal="@dimen/margin_full"
+            android:layout_toStartOf="@id/ivPlayerB"
+            android:layout_toEndOf="@+id/ivVs"
+            android:gravity="end"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/title"
+            android:textStyle="bold"
+            tools:text="210" />
+
+        <com.google.android.material.textview.MaterialTextView
+            style="@style/Widget.MaterialComponents.TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/tvPlayerBScore"
+            android:layout_marginHorizontal="@dimen/margin_full"
+            android:layout_toStartOf="@id/ivPlayerB"
+            android:layout_toEndOf="@+id/ivVs"
+            android:gravity="end"
+            android:text="@string/pq_score"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/body_2" />
 
 
         <com.google.android.material.textview.MaterialTextView
@@ -47,14 +120,12 @@
             style="@style/Widget.MaterialComponents.TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/ivPlayerB"
+            android:layout_alignParentEnd="true"
             android:layout_marginStart="@dimen/margin_full"
-            android:layout_toStartOf="@+id/ivPlayerB"
-            android:background="@color/colorPrimary"
             android:gravity="end"
             android:padding="@dimen/pq_padding_player_name"
-            android:textColor="@color/white"
-            android:textStyle="bold"
+            android:textColor="@color/text_primary"
             tools:text="Player B" />
 
 
@@ -63,7 +134,6 @@
             android:layout_width="@dimen/pq_size_player_multi_quiz"
             android:layout_height="@dimen/pq_size_player_multi_quiz"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
             android:adjustViewBounds="true"
             app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.PlayerB"
             app:srcCompat="@drawable/pq_profile"

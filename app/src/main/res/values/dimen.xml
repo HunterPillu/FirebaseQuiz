@@ -3,6 +3,7 @@
     <dimen name="normal_drawable_size">24dp</dimen>
     <dimen name="min_border_width">1dp</dimen>
 
+    <dimen name="margin_mini">2dp</dimen>
     <dimen name="margin_quarter">4dp</dimen>
     <dimen name="margin_half">8dp</dimen>
     <dimen name="margin_medium">12dp</dimen>

@@ -46,25 +46,20 @@
     </style>
 
     <style name="ShapeAppearanceOverlay.PlayerA">
-        <item name="cornerSizeBottomLeft">@dimen/pq_rounded_player_multi_quiz</item>
-        <item name="cornerFamilyBottomLeft">rounded</item>
-
-        <item name="cornerSizeTopLeft">@dimen/pq_rounded_player_multi_quiz</item>
-        <item name="cornerFamilyTopLeft">rounded</item>
+        <item name="cornerSizeTopRight">@dimen/pq_rounded_player_multi_quiz</item>
+        <item name="cornerFamilyTopRight">rounded</item>
 
         <item name="cornerSizeBottomRight">@dimen/pq_rounded_player_multi_quiz</item>
         <item name="cornerFamilyBottomRight">rounded</item>
     </style>
 
     <style name="ShapeAppearanceOverlay.PlayerB">
-        <item name="cornerSizeTopRight">@dimen/pq_rounded_player_multi_quiz</item>
-        <item name="cornerFamilyTopRight">rounded</item>
 
         <item name="cornerSizeTopLeft">@dimen/pq_rounded_player_multi_quiz</item>
         <item name="cornerFamilyTopLeft">rounded</item>
 
-        <item name="cornerSizeBottomRight">@dimen/pq_rounded_player_multi_quiz</item>
-        <item name="cornerFamilyBottomRight">rounded</item>
+        <item name="cornerSizeBottomLeft">@dimen/pq_rounded_player_multi_quiz</item>
+        <item name="cornerFamilyBottomLeft">rounded</item>
     </style>
 
     <style name="ShapeAppearanceOverlay.App.SelectedCornerCut" parent="">

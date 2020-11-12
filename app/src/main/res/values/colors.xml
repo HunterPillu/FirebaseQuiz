@@ -41,8 +41,11 @@
 
 
     <color name="pq_question_text">@color/text_primary</color>
-    <color name="pq_option_text">@color/text_primary</color>
-
+    <color name="pq_option_color_default">@color/text_primary</color>
+    <color name="pq_card_color_default">@color/white</color>
+    <color name="pq_card_color_correct">#009688</color>
+    <color name="pq_card_color_incorrect">#FB1F05</color>
+    <color name="pq_option_color_selected">@color/white</color>
 
 
 </resources>

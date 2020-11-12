@@ -20,13 +20,7 @@ open class BaseFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     open fun onBackPressed() {
-        //Log.d(TAG, "total entry = " + activity!!.supportFragmentManager.backStackEntryCount)
-        activity?.onBackPressed();
-        /*if (activity!!.supportFragmentManager.backStackEntryCount > 1) {
-            activity?.supportFragmentManager?.popBackStack()
-        } else {
-            activity?.finish();
-        }*/
+        listener.onBackPressed();
     }
 
     override fun onRefresh() {
@@ -42,8 +36,8 @@ open class BaseFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
 
-    fun sendGameInvite(item: User,quizId: String) {
-        listener.onInviteOpponent(item,quizId)
+    fun sendGameInvite(item: User, quizId: String) {
+        listener.onInviteOpponent(item, quizId)
     }
 
     fun firebaseInitGame() {

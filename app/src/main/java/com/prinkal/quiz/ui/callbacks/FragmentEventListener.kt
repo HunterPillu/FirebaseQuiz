@@ -8,7 +8,7 @@ interface FragmentEventListener {
     fun updateToolbarTitle(title: String)
     fun openFragment(fragment: BaseFragment)
     fun onInviteOpponent(opponent: User, quizId: String)
-
+    fun onBackPressed()
     //fun getConnectionObject(): ConnectionLiveData
     fun firebaseInitGame()
 

@@ -46,3 +46,42 @@ data class Invitation<out T>(
 
     }
 }
+
+data class QuestionData<out T>(
+    val status: QuestionEvent,
+    val data: T?,
+    var selectedOption: String = "",
+    var correctAnswer: String = "",
+) {
+
+    companion object {
+
+        fun <T> finished(): QuestionData<T> {
+            return QuestionData(QuestionEvent.FINISHED, null)
+        }
+
+        fun <T> nextQuestion(data: T): QuestionData<T> {
+            return QuestionData(QuestionEvent.QUESTION, data)
+        }
+
+        fun <T> waiting(): QuestionData<T> {
+            return QuestionData(QuestionEvent.WAITING, null)
+        }
+
+        fun <T> loader(isCorrect: Boolean): QuestionData<T> {
+            return if (isCorrect) QuestionData(
+                QuestionEvent.LOADER_CORRECT,
+                null
+            ) else QuestionData(QuestionEvent.LOADER_INCORRECT, null)
+        }
+
+        fun <T> incorrectLoader(): QuestionData<T> {
+            return QuestionData(QuestionEvent.LOADER_INCORRECT, null)
+        }
+
+        fun <T> showAnswer(selectedOption: String, correctAnswer: String): QuestionData<T> {
+            return QuestionData(QuestionEvent.ANSWER, null, selectedOption, correctAnswer)
+        }
+
+    }
+}

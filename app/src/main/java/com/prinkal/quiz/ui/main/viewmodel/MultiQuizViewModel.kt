@@ -9,9 +9,7 @@ import com.prinkal.quiz.data.model.GameRoom
 import com.prinkal.quiz.data.model.Question
 import com.prinkal.quiz.data.model.Quiz
 import com.prinkal.quiz.ui.firebase.FirebaseData
-import com.prinkal.quiz.utils.Const
-import com.prinkal.quiz.utils.CustomLog
-import com.prinkal.quiz.utils.Resource
+import com.prinkal.quiz.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -26,19 +24,29 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
     private lateinit var quiz: Quiz
     private var isInvitationReceived: Boolean = !roomId.contentEquals(FirebaseData.myID)
     private val room = MutableLiveData<Resource<GameRoom>>()
-    private var question = MutableLiveData<Question>()
+    private var timer: PqTimerTask? = null
+    private val mElapsedTime = MutableLiveData<String>()
+
+    //used for notifying new question
+    private var question = MutableLiveData<QuestionData<Question>>()
+
+    //used for notifying view if selected option is correct or not
     private var quesNo: Int = 0
     private var currentScore: Int = 0
 
     init {
-        CustomLog.e(TAG, "isInvitationReceived = $isInvitationReceived")
-        CustomLog.e(TAG, "isInvitationReceived = $roomId == ${FirebaseData.myID}")
+        CustomLog.d(TAG, "init")
+        CustomLog.d(TAG, "isInvitationReceived = $isInvitationReceived")
         room.postValue(Resource.loading(null))
         listenGameRoom()
     }
 
     fun getRoom(): LiveData<Resource<GameRoom>> {
         return room
+    }
+
+    fun getQuestion(): LiveData<QuestionData<Question>> {
+        return question
     }
 
     //listen GameRoom for opponent response
@@ -104,49 +112,57 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
             //now both the player has the quiz and question
             //changing room status to STATUS_PREPARED
             FirebaseApi.updateQuizOnRoom(roomId, quiz, Const.STATUS_PREPARED)
-            CustomLog.e(TAG, "777777777777")
+            CustomLog.e(TAG, "8888888888888")
         }
     }
 
 
     private fun showNextQuestion() {
         if (quesNo < quiz.questions!!.size) {
-            question.postValue(quiz.questions!![quesNo])
+            val ques = quiz.questions!![quesNo]
+            startTimer(ques.time)
+            question.postValue(QuestionData.nextQuestion(ques))
         } else {
-            //one of the players finished
-            //todo handle this
-            viewModelScope.launch(Dispatchers.IO) {
-                //FirebaseApi.updateRoomField(roomId,"status",Const.STATUS)
-            }
+            //one of the players finished the quiz
+            question.postValue(QuestionData.finished())
         }
-
     }
 
-    fun getQuestion(): LiveData<Question> {
-        return question
-    }
 
-    fun onAnswerSubmitted(answer: String) {
+    fun onAnswerSubmitted(selectedOption: String) {
+        //while calculating result put view on waiting
+        mElapsedTime.postValue("00:00")
+        cancelTimer()
+        question.postValue(QuestionData.waiting())
+
         //check answer if correct or incorrect
-        val question = quiz.questions!![quesNo]
-        if (answer == question.answer) {
+        val questionVo = quiz.questions!![quesNo]
+        val isCorrect = selectedOption == questionVo.answer
+        if (isCorrect) {
             //add the correct score
-            currentScore += question.correctScore
+            currentScore += questionVo.correctScore
 
             //check if it is a power question
-            if (question.powerQuestion) {
+            if (questionVo.powerQuestion) {
                 // add power score
-                currentScore += question.powerScore
+                currentScore += questionVo.powerScore
             }
+            //question.postValue(QuestionData.correctLoader())
         } else {
             // subtract the negative marks  (incorrectScore will be in negative eg -110)
-            currentScore += question.incorrectScore
+            currentScore += questionVo.incorrectScore
         }
+
+        //update ui to show current question result
+        question.postValue(QuestionData.showAnswer(selectedOption, questionVo.answer))
 
         //update score on the room
         viewModelScope.launch(Dispatchers.IO) {
+            question.postValue(QuestionData.loader(isCorrect))
             val field = if (isInvitationReceived) "playerBScore" else "playerAScore"
             FirebaseApi.updateRoomField(roomId, field, currentScore)
+
+
         }
 
         //increase question number and show next
@@ -154,6 +170,7 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
         showNextQuestion()
     }
 
+    //set room status to IN_GAME and show first question
     fun startFirstQuestion() {
         viewModelScope.launch(Dispatchers.IO) {
             FirebaseApi.updateRoomField(roomId, "status", Const.STATUS_IN_GAME)
@@ -163,5 +180,37 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
 
     fun hasInvitationReceived(): Boolean = isInvitationReceived
 
+    fun getElapsedTime(): LiveData<String> {
+        return mElapsedTime
+    }
+
+    //start timer for each question
+    private fun startTimer(time: Int) {
+        CustomLog.e(TAG, "quesNo=$quesNo time=$time")
+        var duration = time
+        cancelTimer()
+        timer = PqTimerTask(coroutineScope = viewModelScope, repeat = 2, timerNo = quesNo) {
+            CustomLog.e(TAG, "quesNo=$quesNo duration=$duration")
+            if (duration < 0) {
+                onAnswerSubmitted("")
+            } else {
+                mElapsedTime.value = "${duration / 60}:${duration % 60}"
+                duration--
+            }
+        }
+        timer?.start()
+
+    }
+
+    //optional: clearing timer when view model destroyed
+    override fun onCleared() {
+        super.onCleared()
+        cancelTimer()
+    }
+
+    //cancel timer if running
+    private fun cancelTimer() {
+        timer?.cancel()
+    }
 
 }
