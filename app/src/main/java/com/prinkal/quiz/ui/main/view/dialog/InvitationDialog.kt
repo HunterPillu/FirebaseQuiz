@@ -24,6 +24,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 class InvitationDialog : BottomSheetDialogFragment() {
 
+    private var isInvitationAccepted: Boolean = false
     private lateinit var viewModel: InviteViewModel
     private var isInviteReceived: Boolean = false
     private lateinit var quizId: String
@@ -143,16 +144,14 @@ class InvitationDialog : BottomSheetDialogFragment() {
     private fun updateView(room: GameRoom) {
 
         if (room.status == Const.STATUS_ACCEPTED) {
-            //just dismiss the dialog , reject event is already handled on onDismiss()
+            //just dismiss the dialog , "open next screen" event is already handled on onDismiss()
             CustomLog.e(TAG, "STATUS_ACCEPTED")
+            isInvitationAccepted = true
             dialog?.dismiss()
-            openNextScreen()
             return
         }
 
         pbLoader.visibility = GONE
-
-
 
         if (isInviteReceived) {
 
@@ -172,7 +171,9 @@ class InvitationDialog : BottomSheetDialogFragment() {
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         CustomLog.e(TAG, "onDismiss")
-        if (isInviteReceived) {
+        if (isInvitationAccepted) {
+            openNextScreen()
+        } else if (isInviteReceived) {
             viewModel.invitationRejected()
         } else {
             viewModel.cancelInvitation()
@@ -180,19 +181,7 @@ class InvitationDialog : BottomSheetDialogFragment() {
     }
 
     private fun openNextScreen() {
-        /*val intent: Intent = when {
-            FirebaseAuth.getInstance().currentUser != null -> {
-                Intent(context, MainActivity::class.java)
-            }
-            Const.SHOW_INTRO_ALWAYS -> {
-                Intent(context, OnBoardingActivity::class.java)
-            }
-            else -> {
-                Intent(context, LoginActivity::class.java)
-            }
-        }
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)*/
+        //todo open next screen
     }
 
 

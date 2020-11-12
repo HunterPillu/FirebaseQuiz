@@ -239,7 +239,7 @@ object FirebaseApi {
     @ExperimentalCoroutinesApi
     suspend inline fun <reified T> listenUserChange(uid: String): Flow<T?> {
         return Firebase.firestore
-            .collection(Const.TABLE_ROOM).document(uid)
+            .collection(Const.TABLE_USERS).document(uid)
             .getDataFlow { querySnapshot ->
                 querySnapshot?.toObject()
             }
