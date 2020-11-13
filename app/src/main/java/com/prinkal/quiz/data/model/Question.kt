@@ -1,5 +1,7 @@
 package com.prinkal.quiz.data.model
 
+import com.google.firebase.firestore.Exclude
+
 data class Question(
     var answer: String = "",
     var uid: String = "",
@@ -17,7 +19,8 @@ data class Question(
 ) {
 
     // provide options as shuffled list so that every time options will be different place eg A,B,C,D
-    fun getOptionAsShuffledList(): List<String> {
+    @Exclude
+    fun fetchOptionAsShuffledList(): List<String> {
         return arrayListOf<String>().apply {
             add(optA)
             add(optB)

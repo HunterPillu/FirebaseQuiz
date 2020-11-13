@@ -3,6 +3,8 @@ package com.prinkal.quiz.ui.main.view
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.AppCompatTextView
@@ -47,7 +49,6 @@ class MultiQuizFragment : BaseFragment() {
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             CustomLog.d(TAG, "Fragment back pressed invoked")
-            // Do custom work here
 
             // if you want onBackPressed() to be called as normal afterwards
             /*if (isEnabled) {
@@ -201,11 +202,11 @@ class MultiQuizFragment : BaseFragment() {
 
     private fun setupRoomObserver() {
 
-        viewModel.getElapsedTime().observe(viewLifecycleOwner, {
+        viewModel.getElapsedTime().observe(viewLifecycleOwner, { it ->
             CustomLog.e(TAG, "getElapsedTime = $it")
-            tvTimer.text = it
-            /*pbProgress.progress =
-                100 - ((it * 100 * 1000) / Config.INVITATION_EXPIRE_TIME).toInt()*/
+            tvTimer.text = it.timeStr
+            pbHeader.progress = it.progress
+
         })
 
 
@@ -246,9 +247,10 @@ class MultiQuizFragment : BaseFragment() {
                     enableDisableCardClicks(false)
                 }
                 QuestionEvent.LOADER_CORRECT -> {
-
+                    showMsg(requireContext(), "Correct answer")
                 }
                 QuestionEvent.LOADER_INCORRECT -> {
+                    showMsg(requireContext(), "Incorrect answer")
 
                 }
                 QuestionEvent.ANSWER -> {
@@ -258,7 +260,13 @@ class MultiQuizFragment : BaseFragment() {
                 QuestionEvent.FINISHED -> {
                     showMsg(requireContext(), "finished")
                     //all question finished ,one of the player finished the quiz
-                    openFragment(HomeFragment.newInstance())
+                    //openFragment(HomeFragment.newInstance())
+
+                    requireActivity().supportFragmentManager.beginTransaction()
+                        .remove(this)
+                        .replace(R.id.container, HomeFragment.newInstance())
+                        .addToBackStack(null)
+                        .commit()
                 }
             }
         })
@@ -274,9 +282,12 @@ class MultiQuizFragment : BaseFragment() {
 
     private fun updateQuestionView(ques: Question) {
         updateCardsToDefault()
+
+        tvPower.visibility = if (ques.powerQuestion) VISIBLE else GONE
+
         tvQuestion.text = ques.question
         //get all options as shuffled list
-        val optList = ques.getOptionAsShuffledList()
+        val optList = ques.fetchOptionAsShuffledList()
         tvOptA.text = optList[0]
         tvOptB.text = optList[1]
         tvOptC.text = optList[2]

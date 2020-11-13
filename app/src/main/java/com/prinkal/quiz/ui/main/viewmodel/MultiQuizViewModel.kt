@@ -12,6 +12,7 @@ import com.prinkal.quiz.ui.firebase.FirebaseData
 import com.prinkal.quiz.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -25,7 +26,7 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
     private var isInvitationReceived: Boolean = !roomId.contentEquals(FirebaseData.myID)
     private val room = MutableLiveData<Resource<GameRoom>>()
     private var timer: PqTimerTask? = null
-    private val mElapsedTime = MutableLiveData<String>()
+    private val mElapsedTime = MutableLiveData<Progress>()
 
     //used for notifying new question
     private var question = MutableLiveData<QuestionData<Question>>()
@@ -131,10 +132,22 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
 
     fun onAnswerSubmitted(selectedOption: String) {
         //while calculating result put view on waiting
-        mElapsedTime.postValue("00:00")
+        mElapsedTime.postValue(Progress())
         cancelTimer()
         question.postValue(QuestionData.waiting())
 
+
+        //val delay2Sec = PqTimerTask("delay2Sec $quesNo", 1, null, null, viewModelScope) {
+
+        calculateAnswer(selectedOption)
+
+
+        //}
+        //delay2Sec.start()
+
+    }
+
+    private fun calculateAnswer(selectedOption: String) {
         //check answer if correct or incorrect
         val questionVo = quiz.questions!![quesNo]
         val isCorrect = selectedOption == questionVo.answer
@@ -153,21 +166,25 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
             currentScore += questionVo.incorrectScore
         }
 
-        //update ui to show current question result
-        question.postValue(QuestionData.showAnswer(selectedOption, questionVo.answer))
 
         //update score on the room
         viewModelScope.launch(Dispatchers.IO) {
-            question.postValue(QuestionData.loader(isCorrect))
+
             val field = if (isInvitationReceived) "playerBScore" else "playerAScore"
             FirebaseApi.updateRoomField(roomId, field, currentScore)
 
+            //update ui to show current question result
+            question.postValue(QuestionData.showAnswer(selectedOption, questionVo.answer))
+            delay(1000)
 
+            //show laoder on ui
+            question.postValue(QuestionData.loader(isCorrect))
+            delay(3000)
+
+            //increase question number and show next
+            quesNo++
+            showNextQuestion()
         }
-
-        //increase question number and show next
-        quesNo++
-        showNextQuestion()
     }
 
     //set room status to IN_GAME and show first question
@@ -180,22 +197,23 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
 
     fun hasInvitationReceived(): Boolean = isInvitationReceived
 
-    fun getElapsedTime(): LiveData<String> {
+    fun getElapsedTime(): LiveData<Progress> {
         return mElapsedTime
     }
 
     //start timer for each question
-    private fun startTimer(time: Int) {
-        CustomLog.e(TAG, "quesNo=$quesNo time=$time")
-        var duration = time
+    private fun startTimer(duration: Int) {
+        CustomLog.e(TAG, "quesNo=$quesNo time=$duration")
         cancelTimer()
-        timer = PqTimerTask(coroutineScope = viewModelScope, repeat = 2, timerNo = quesNo) {
-            CustomLog.e(TAG, "quesNo=$quesNo duration=$duration")
-            if (duration < 0) {
+        timer = PqTimerTask("$quesNo", 0, 1, duration + 1, viewModelScope) { remainingTime ->
+            CustomLog.e(TAG, "quesNo=$quesNo duration=$remainingTime")
+            if (remainingTime == 0) {
                 onAnswerSubmitted("")
             } else {
-                mElapsedTime.value = "${duration / 60}:${duration % 60}"
-                duration--
+                mElapsedTime.value = Progress(
+                    "${remainingTime / 60}:${remainingTime % 60}",
+                    100 - ((remainingTime * 100) / duration)
+                )
             }
         }
         timer?.start()
@@ -212,5 +230,7 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
     private fun cancelTimer() {
         timer?.cancel()
     }
+
+    data class Progress(var timeStr: String = "0.0", var progress: Int = 0)
 
 }

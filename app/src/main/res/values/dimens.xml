@@ -8,9 +8,11 @@
     <dimen name="pq_size_player_multi_quiz">72dp</dimen>
     <dimen name="pq_rounded_player_multi_quiz">36dp</dimen>
     <dimen name="pq_padding_player_name">8dp</dimen>
-    <dimen name="pq_stroke_player">4dp</dimen>
+    <dimen name="pq_stroke_player">2dp</dimen>
     <dimen name="pq_size_header_multi_quiz">120dp</dimen>
-    <dimen name="pq_size_versus">48dp</dimen>
+    <dimen name="pq_size_versus">36dp</dimen>
 
     <dimen name="pq_size_question">@dimen/body_1</dimen>
+    <dimen name="pq_size_score">18sp</dimen>
+    <dimen name="pq_elevation_card_quiz">4dp</dimen>
 </resources>

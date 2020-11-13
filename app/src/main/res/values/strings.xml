@@ -23,4 +23,5 @@
     <string name="pq_reject">Reject</string>
     <string name="pq_accept">Accept</string>
     <string name="pq_score">Score</string>
+    <string name="pq_power_question">Power Question</string>
 </resources>

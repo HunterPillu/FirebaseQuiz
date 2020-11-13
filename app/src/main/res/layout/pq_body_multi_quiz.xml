@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cvBody"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_below="@+id/cvHeader"
+    android:layout_weight=".3"
     android:animateLayoutChanges="true"
     android:orientation="vertical"
     android:visibility="gone"
@@ -14,12 +16,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginHorizontal="@dimen/margin_quarter"
-        android:layout_weight="2">
+        android:layout_marginVertical="@dimen/margin_mini"
+        android:layout_weight="2"
+        app:cardElevation="@dimen/pq_elevation_card_quiz">
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvQuestion"
             style="@style/text_question"
             tools:text="The instrument used to measure the radio activity is" />
+
 
     </com.google.android.material.card.MaterialCardView>
 
@@ -34,9 +39,10 @@
             android:id="@+id/cvOptA"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="@dimen/margin_mini"
+            android:layout_marginHorizontal="@dimen/margin_mini"
             android:layout_weight="1"
-            android:tag="A">
+            android:tag="A"
+            app:cardElevation="@dimen/pq_elevation_card_quiz">
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tvOptA"
@@ -50,7 +56,7 @@
             android:id="@+id/cvOptB"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="@dimen/margin_mini"
+            android:layout_marginHorizontal="@dimen/margin_mini"
             android:layout_weight="1"
             android:tag="B">
 
@@ -67,16 +73,19 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/margin_mini"
+        android:layout_marginHorizontal="@dimen/margin_mini"
+        android:layout_marginTop="@dimen/margin_mini"
+        android:layout_marginBottom="@dimen/margin_quarter"
         android:layout_weight="3">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cvOptC"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="@dimen/margin_mini"
+            android:layout_marginHorizontal="@dimen/margin_mini"
             android:layout_weight="1"
-            android:tag="C">
+            android:tag="C"
+            app:cardElevation="@dimen/pq_elevation_card_quiz">
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tvOptC"
@@ -90,9 +99,10 @@
             android:id="@+id/cvOptD"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="@dimen/margin_mini"
+            android:layout_marginHorizontal="@dimen/margin_mini"
             android:layout_weight="1"
-            android:tag="D">
+            android:tag="D"
+            app:cardElevation="@dimen/pq_elevation_card_quiz">
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tvOptD"

@@ -4,25 +4,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cvHeader"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="@dimen/margin_quarter"
-    android:visibility="gone"
-    app:cardElevation="@dimen/margin_quarter"
+    android:layout_height="match_parent"
+    android:layout_marginHorizontal="@dimen/margin_quarter"
+    android:layout_marginTop="@dimen/margin_quarter"
+    android:layout_marginBottom="@dimen/margin_mini"
+    android:layout_weight=".7"
+    android:animateLayoutChanges="true"
+    android:visibility="visible"
+    app:cardBackgroundColor="@color/colorPrimary"
+    app:cardElevation="@dimen/pq_elevation_card_quiz"
     tools:visibility="visible">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_half">
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/margin_half">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/ivPlayerA"
             android:layout_width="@dimen/pq_size_player_multi_quiz"
             android:layout_height="@dimen/pq_size_player_multi_quiz"
+            android:layout_centerVertical="true"
             android:adjustViewBounds="true"
+            android:padding="@dimen/pq_stroke_player"
             app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.PlayerA"
             app:srcCompat="@drawable/pq_profile"
-            app:strokeColor="@color/colorPrimary"
+            app:strokeColor="@color/white_light"
             app:strokeWidth="@dimen/pq_stroke_player" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -30,10 +37,11 @@
             style="@style/Widget.MaterialComponents.TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/ivPlayerA"
+            android:layout_above="@+id/ivPlayerA"
+            android:layout_marginStart="@dimen/margin_half"
             android:layout_marginEnd="@dimen/margin_full"
             android:padding="@dimen/pq_padding_player_name"
-            android:textColor="@color/text_primary"
+            android:textColor="@color/white_light"
             tools:text="Player A" />
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -48,16 +56,15 @@
             style="@style/Widget.MaterialComponents.TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/ivVs"
+            android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginHorizontal="@dimen/margin_full"
-            android:layout_marginTop="36dp"
+            android:layout_marginBottom="@dimen/margin_half"
             android:drawableStart="@drawable/pq_clock_24"
             android:drawablePadding="@dimen/margin_mini"
             android:gravity="center"
-            android:textColor="@color/text_primary"
+            android:textColor="@color/white_lighter"
             android:textSize="@dimen/body_2"
-            app:drawableTint="@color/colorPrimary"
+            app:drawableTint="@color/white_light"
             tools:text="00:00" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -69,8 +76,8 @@
             android:layout_marginHorizontal="@dimen/margin_full"
             android:layout_toStartOf="@id/ivVs"
             android:layout_toEndOf="@+id/ivPlayerA"
-            android:textColor="@color/colorPrimary"
-            android:textSize="@dimen/title"
+            android:textColor="@color/white_light"
+            android:textSize="@dimen/pq_size_score"
             android:textStyle="bold"
             tools:text="490" />
 
@@ -83,7 +90,7 @@
             android:layout_toStartOf="@id/ivVs"
             android:layout_toEndOf="@+id/ivPlayerA"
             android:text="@string/pq_score"
-            android:textColor="@color/text_secondary"
+            android:textColor="@color/white_lighter"
             android:textSize="@dimen/body_2" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -96,8 +103,8 @@
             android:layout_toStartOf="@id/ivPlayerB"
             android:layout_toEndOf="@+id/ivVs"
             android:gravity="end"
-            android:textColor="@color/colorPrimary"
-            android:textSize="@dimen/title"
+            android:textColor="@color/white_light"
+            android:textSize="@dimen/pq_size_score"
             android:textStyle="bold"
             tools:text="210" />
 
@@ -111,7 +118,7 @@
             android:layout_toEndOf="@+id/ivVs"
             android:gravity="end"
             android:text="@string/pq_score"
-            android:textColor="@color/text_secondary"
+            android:textColor="@color/white_lighter"
             android:textSize="@dimen/body_2" />
 
 
@@ -120,12 +127,13 @@
             style="@style/Widget.MaterialComponents.TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/ivPlayerB"
+            android:layout_above="@+id/ivPlayerB"
             android:layout_alignParentEnd="true"
             android:layout_marginStart="@dimen/margin_full"
+            android:layout_marginEnd="@dimen/margin_half"
             android:gravity="end"
             android:padding="@dimen/pq_padding_player_name"
-            android:textColor="@color/text_primary"
+            android:textColor="@color/white_light"
             tools:text="Player B" />
 
 
@@ -134,12 +142,42 @@
             android:layout_width="@dimen/pq_size_player_multi_quiz"
             android:layout_height="@dimen/pq_size_player_multi_quiz"
             android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
             android:adjustViewBounds="true"
+            android:padding="@dimen/pq_stroke_player"
             app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.PlayerB"
             app:srcCompat="@drawable/pq_profile"
-            app:strokeColor="@color/colorPrimary"
+            app:strokeColor="@color/white_light"
             app:strokeWidth="@dimen/pq_stroke_player" />
 
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvPower"
+            style="@style/Widget.MaterialComponents.TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/margin_half"
+            android:background="@drawable/rounded_left_12"
+            android:paddingHorizontal="@dimen/margin_half"
+            android:paddingVertical="@dimen/margin_mini"
+            android:text="@string/pq_power_question"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/body_1"
+            android:textStyle="bold"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <com.google.android.material.progressindicator.ProgressIndicator
+            android:id="@+id/pbHeader"
+            style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Determinate"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:progress="35"
+            app:indicatorColor="@color/progress_question_indicator"
+            app:trackColor="@color/progress_question_track" />
 
     </RelativeLayout>
 
