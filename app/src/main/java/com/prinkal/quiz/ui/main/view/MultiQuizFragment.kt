@@ -202,7 +202,7 @@ class MultiQuizFragment : BaseFragment() {
 
     private fun setupRoomObserver() {
 
-        viewModel.getElapsedTime().observe(viewLifecycleOwner, { it ->
+        viewModel.getElapsedTime().observe(viewLifecycleOwner, {
             CustomLog.e(TAG, "getElapsedTime = $it")
             tvTimer.text = it.timeStr
             pbHeader.progress = it.progress
@@ -260,13 +260,12 @@ class MultiQuizFragment : BaseFragment() {
                 QuestionEvent.FINISHED -> {
                     showMsg(requireContext(), "finished")
                     //all question finished ,one of the player finished the quiz
-                    //openFragment(HomeFragment.newInstance())
+                    openFragment(ResultMultiQuizFragment.newInstance(roomId))
 
-                    requireActivity().supportFragmentManager.beginTransaction()
-                        .remove(this)
-                        .replace(R.id.container, HomeFragment.newInstance())
+                    /*requireActivity().supportFragmentManager.beginTransaction()
+                        .replace(R.id.container, ResultMultiQuizFragment.newInstance(roomId))
                         .addToBackStack(null)
-                        .commit()
+                        .commit()*/
                 }
             }
         })
@@ -301,16 +300,16 @@ class MultiQuizFragment : BaseFragment() {
         if (room.status == Const.STATUS_PREPARED) {
 
             //show view
-            pbLoader.visibility = View.GONE
-            cvHeader.visibility = View.VISIBLE
-            cvBody.visibility = View.VISIBLE
+            pbLoader.visibility = GONE
+            cvHeader.visibility = VISIBLE
+            cvBody.visibility = VISIBLE
 
             if (viewModel.hasInvitationReceived()) {
-                tvPlayerA.text = room.playerBName
-                tvPlayerB.text = room.playerAName
+                tvPlayerA.text = room.playerB?.name
+                tvPlayerB.text = room.playerA?.name
             } else {
-                tvPlayerA.text = room.playerAName
-                tvPlayerB.text = room.playerBName
+                tvPlayerA.text = room.playerA?.name
+                tvPlayerB.text = room.playerB?.name
             }
 
             //start quiz

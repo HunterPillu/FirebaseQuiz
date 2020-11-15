@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.prinkal.quiz.data.api.FirebaseApi
+import com.prinkal.quiz.data.model.GameMeta
 import com.prinkal.quiz.data.model.GameRoom
 import com.prinkal.quiz.data.model.User
 import com.prinkal.quiz.ui.firebase.FirebaseData
@@ -74,12 +75,10 @@ class InviteViewModel(private val player: User, private val quizId: String) :
             val creator = FirebaseApi.getUserById(FirebaseData.myID)!!
 
             val room = GameRoom(
-                creator.uid,
-                creator.name,
-                player.uid,
-                player.name,
-                quizId,
-                Utils.getCurrentTimeInMillis()
+                playerA = GameMeta(uid = creator.uid, name = creator.name, opponentId = player.uid),
+                playerB = GameMeta(uid = player.uid, name = player.name, opponentId = creator.uid),
+                quizId = quizId,
+                ts = Utils.getCurrentTimeInMillis()
             )
             FirebaseApi.createRoom(room)
             listenForOpponentResponse()

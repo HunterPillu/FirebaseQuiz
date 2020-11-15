@@ -306,7 +306,7 @@ object FirebaseApi {
     //create room with creator user id
     suspend fun createRoom(room: GameRoom) {
         Firebase.firestore
-            .collection(Const.TABLE_ROOM).document(room.playerAId).set(room)
+            .collection(Const.TABLE_ROOM).document(room.playerA!!.uid).set(room)
             .await()
     }
 

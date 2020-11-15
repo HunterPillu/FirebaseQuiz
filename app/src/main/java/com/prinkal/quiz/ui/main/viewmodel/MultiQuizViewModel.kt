@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.prinkal.quiz.data.api.FirebaseApi
+import com.prinkal.quiz.data.model.GameMeta
 import com.prinkal.quiz.data.model.GameRoom
 import com.prinkal.quiz.data.model.Question
 import com.prinkal.quiz.data.model.Quiz
@@ -21,6 +22,9 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
     companion object {
         internal val TAG = MultiQuizViewModel::class.java.name
     }
+
+    //game stats of this player will be saved on gameMeta
+    private lateinit var gameMeta: GameMeta
 
     private lateinit var quiz: Quiz
     private var isInvitationReceived: Boolean = !roomId.contentEquals(FirebaseData.myID)
@@ -80,10 +84,15 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
     //inject Quiz and Question only if status = STATUS_ACCEPTED because opponent just accepted the opponent request
     private fun injectQuizInRoom(gameRoom: GameRoom) {
         CustomLog.e(TAG, "111111111111")
+
+
         //only playerA will setup questions because he is the challenger
         if (isInvitationReceived) {
             return
         }
+
+        //game stats of this player will be saved on gameMeta
+        gameMeta = gameRoom.playerA!!
 
         CustomLog.e(TAG, "222222222222")
         viewModelScope.launch(Dispatchers.IO) {
@@ -91,9 +100,12 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
             //fetching quiz mearged with 10 random question
             quiz = FirebaseApi.getQuizWithQuestion(gameRoom.quizId)
             CustomLog.e(TAG, "33333333333333")
-            //adding quiz to room , so that opponet (PlayerB) can download
+            //adding quiz to room , so that opponent (PlayerB) can download
             FirebaseApi.updateQuizOnRoom(roomId, quiz, Const.STATUS_PREPARING)
             CustomLog.e(TAG, "444444444444")
+
+            //saving game stats : total question count
+            gameMeta.totalQuestion = quiz.questions!!.size
         }
     }
 
@@ -102,9 +114,17 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
     private fun fetchQuizFromRoom(gameRoom: GameRoom) {
         CustomLog.e(TAG, "66666666666")
         //only playerB need the quiz
-        if (isInvitationReceived) {
-            quiz = gameRoom.quiz!!
+        if (!isInvitationReceived) {
+            return
         }
+
+        quiz = gameRoom.quiz!!
+
+        //game stats of this player will be saved on gameMeta
+        gameMeta = gameRoom.playerB!!
+
+        //saving game stats : total question count
+        gameMeta.totalQuestion = quiz.questions!!.size
 
         CustomLog.e(TAG, "666666666666666")
         viewModelScope.launch(Dispatchers.IO) {
@@ -112,7 +132,7 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
             //deleting quiz from room , it will reduce network data
             //now both the player has the quiz and question
             //changing room status to STATUS_PREPARED
-            FirebaseApi.updateQuizOnRoom(roomId, quiz, Const.STATUS_PREPARED)
+            FirebaseApi.updateQuizOnRoom(roomId, null, Const.STATUS_PREPARED)
             CustomLog.e(TAG, "8888888888888")
         }
     }
@@ -126,6 +146,15 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
         } else {
             //one of the players finished the quiz
             question.postValue(QuestionData.finished())
+            viewModelScope.launch(Dispatchers.IO) {
+
+                //used to notify other player that this player has finished
+                gameMeta.status = Const.STATUS_FINISHED
+
+                //save game stats to correct player
+                val field = if (isInvitationReceived) "playerB" else "playerA"
+                FirebaseApi.updateRoomField(roomId, field, gameMeta)
+            }
         }
     }
 
@@ -133,6 +162,10 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
     fun onAnswerSubmitted(selectedOption: String) {
         //while calculating result put view on waiting
         mElapsedTime.postValue(Progress())
+
+        //save total consumed time for this question
+        gameMeta.totalTime += timer!!.getConsumedTime()
+
         cancelTimer()
         question.postValue(QuestionData.waiting())
 
@@ -151,7 +184,16 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
         //check answer if correct or incorrect
         val questionVo = quiz.questions!![quesNo]
         val isCorrect = selectedOption == questionVo.answer
+
+        if (selectedOption != "") {
+            //saving game stats : correct answer count
+            gameMeta.totalAttempted += 1
+        }
+
         if (isCorrect) {
+            //saving game stats : correct answer count
+            gameMeta.totalCorrect += 1
+
             //add the correct score
             currentScore += questionVo.correctScore
 
@@ -164,12 +206,21 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
         } else {
             // subtract the negative marks  (incorrectScore will be in negative eg -110)
             currentScore += questionVo.incorrectScore
+
+            if (selectedOption != "") {
+                //saving game stats : incorrect answer count
+                gameMeta.totalIncorrect += 1
+            }
         }
 
 
         //update score on the room
         viewModelScope.launch(Dispatchers.IO) {
 
+            //saving game stats : current score
+            gameMeta.score = currentScore
+
+            //optimization : aving score on room.playerBScore instead of room.playerA.score
             val field = if (isInvitationReceived) "playerBScore" else "playerAScore"
             FirebaseApi.updateRoomField(roomId, field, currentScore)
 
@@ -205,7 +256,7 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
     private fun startTimer(duration: Int) {
         CustomLog.e(TAG, "quesNo=$quesNo time=$duration")
         cancelTimer()
-        timer = PqTimerTask("$quesNo", 0, 1, duration + 1, viewModelScope) { remainingTime ->
+        timer = PqTimerTask("$quesNo", 0, 1, duration, viewModelScope) { remainingTime ->
             CustomLog.e(TAG, "quesNo=$quesNo duration=$remainingTime")
             if (remainingTime == 0) {
                 onAnswerSubmitted("")

@@ -157,10 +157,10 @@ class InvitationDialog : BottomSheetDialogFragment() {
 
         if (isInviteReceived) {
 
-            tvDesc.text = getString(R.string.pq_invitation_received_desc, room.playerAName)
+            tvDesc.text = getString(R.string.pq_invitation_received_desc, room.playerA?.name)
             bAccept.visibility = VISIBLE
         } else {
-            tvDesc.text = getString(R.string.pq_invitation_sent_desc, room.playerBName)
+            tvDesc.text = getString(R.string.pq_invitation_sent_desc, room.playerB?.name)
             //check if invitation rejected by opponent
             if (room.status == Const.STATUS_REJECT) {
                 //just dismiss the dialog , reject event is already handled on onDismiss()

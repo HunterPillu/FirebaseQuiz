@@ -47,10 +47,10 @@
     <color name="pq_card_color_incorrect">#FB1F05</color>
     <color name="pq_option_color_selected">@color/white</color>
     <color name="progress_question_track">#44ffffff</color>
-    <color name="progress_question_indicator">@color/white_light</color>
+    <color name="progress_question_indicator">@color/colorPrimary</color>
     <color name="white_light">#ffffff</color>
     <color name="white_lighter">#eeeeee</color>
-    <color name="pq_congrats" >#6200EE</color>
+    <color name="pq_congrats">#6200EE</color>
     <color name="pq_result_score_a">@color/colorPrimary</color>
     <color name="pq_result_score_b">@color/text_secondary</color>
 

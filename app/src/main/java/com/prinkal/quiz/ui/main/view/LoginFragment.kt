@@ -9,15 +9,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.firebase.ui.auth.AuthUI
+import com.firebase.ui.auth.ErrorCodes
+import com.firebase.ui.auth.IdpResponse
 import com.prinkal.quiz.R
 import com.prinkal.quiz.ui.base.BaseFragment
 import com.prinkal.quiz.ui.base.ViewModelFactory
 import com.prinkal.quiz.ui.main.viewmodel.LoginViewModel
 import com.prinkal.quiz.utils.Status
 import com.prinkal.quiz.utils.showMsg
-import com.firebase.ui.auth.AuthUI
-import com.firebase.ui.auth.ErrorCodes
-import com.firebase.ui.auth.IdpResponse
 import kotlinx.android.synthetic.main.pq_fragment_login.*
 import java.util.*
 

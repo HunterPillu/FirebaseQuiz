@@ -10,7 +10,7 @@ class PqTimerTask(
     private val name: String,
     private val delay: Int = 0,
     private val interval: Int? = null,
-    duration: Int? = null,
+    private val duration: Int? = null,
     private val coroutineScope: CoroutineScope,
     action: suspend (duration: Int) -> Unit
 ) {
@@ -24,6 +24,12 @@ class PqTimerTask(
             CustomLog.e("PqTimerTask", "timerNo=$name timer action failed: ", e)
             cancel()
         }
+    }
+
+    fun getConsumedTime(): Int {
+        return if (null != duration) {
+            duration - remainingTime
+        } else 0
     }
 
     fun start() {

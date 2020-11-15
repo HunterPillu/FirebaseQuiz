@@ -28,12 +28,14 @@
     <string name="pq_oops">Oops !</string>
     <string name="pq_your_score_">Your Score %d</string>
     <string name="pq_won_by_user_">You won against %s by</string>
+    <string name="pq_lose_by_user_">You lose against %s by</string>
     <string name="pq_total_question">Total Ques.</string>
-    <string name="pq_total_attempted">Ques. Attempted</string>
+    <string name="pq_total_attempted">Attempted</string>
     <string name="pq_total_corrected">Correct</string>
     <string name="pq_back_to_home">Back to home</string>
-    <string name="pq_opp_score">Opponent \'s Score %d</string>
+    <string name="pq_opp_score">%s\'s Score %d</string>
     <string name="pq_total_time">Time (in sec)</string>
     <string name="pq_lifeline_used">Lifeline Used</string>
     <string name="pq_total_incorrect">Incorrect</string>
+    <string name="pq_result">Result</string>
 </resources>
