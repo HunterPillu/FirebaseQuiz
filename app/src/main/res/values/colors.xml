@@ -50,6 +50,9 @@
     <color name="progress_question_indicator">@color/white_light</color>
     <color name="white_light">#ffffff</color>
     <color name="white_lighter">#eeeeee</color>
+    <color name="pq_congrats" >#6200EE</color>
+    <color name="pq_result_score_a">@color/colorPrimary</color>
+    <color name="pq_result_score_b">@color/text_secondary</color>
 
 
 </resources>

@@ -81,23 +81,6 @@
 
             </RelativeLayout>
 
-            <RelativeLayout
-                android:id="@+id/rlSearch"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivBackSearch"
-                    android:layout_width="@dimen/size_toolbar_icon"
-                    android:layout_height="@dimen/size_toolbar_icon"
-                    android:layout_centerVertical="true"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    android:padding="12dp"
-                    android:src="@drawable/pq_back_24" />
-
-            </RelativeLayout>
-
         </RelativeLayout>
 
 

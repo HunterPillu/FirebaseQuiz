@@ -15,4 +15,5 @@
     <dimen name="pq_size_question">@dimen/body_1</dimen>
     <dimen name="pq_size_score">18sp</dimen>
     <dimen name="pq_elevation_card_quiz">4dp</dimen>
+    <dimen name="margin_intrisic_result_card">8dp</dimen>
 </resources>
