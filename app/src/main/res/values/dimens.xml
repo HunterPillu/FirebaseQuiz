@@ -15,5 +15,9 @@
     <dimen name="pq_size_question">@dimen/body_1</dimen>
     <dimen name="pq_size_score">18sp</dimen>
     <dimen name="pq_elevation_card_quiz">4dp</dimen>
+
+    <!--<<START >> :both intrinsic margin must be in 2:1 ratio-->
     <dimen name="margin_intrisic_result_card">12dp</dimen>
+    <dimen name="margin_half_intrisic_result_card">6dp</dimen>
+    <!--<<END>>-->
 </resources>

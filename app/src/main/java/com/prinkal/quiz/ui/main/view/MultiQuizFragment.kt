@@ -24,6 +24,7 @@ import kotlinx.android.synthetic.main.pq_header_multi_quiz.*
 
 class MultiQuizFragment : BaseFragment() {
 
+    private var isGamePaused: Boolean = false
     private lateinit var roomId: String
     private lateinit var viewModel: MultiQuizViewModel
 
@@ -98,7 +99,6 @@ class MultiQuizFragment : BaseFragment() {
         alertDialog.show()
     }
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -114,8 +114,21 @@ class MultiQuizFragment : BaseFragment() {
         setupQuestionObserver()
     }
 
-    private val optionClickListener = View.OnClickListener { v ->
+    override fun onPause() {
+        super.onPause()
+        isGamePaused = true
+        viewModel.pauseTimer()
+    }
 
+    override fun onStart() {
+        super.onStart()
+        if (isGamePaused) {
+            isGamePaused = false
+            viewModel.skipCurrentQuestion()
+        }
+    }
+
+    private val optionClickListener = View.OnClickListener { v ->
         val selectedOption = updateCardColorAsSelected(v)
         viewModel.onAnswerSubmitted(selectedOption)
 

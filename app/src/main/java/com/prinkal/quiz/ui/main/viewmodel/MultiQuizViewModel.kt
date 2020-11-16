@@ -149,7 +149,7 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
         }
     }
 
-    fun saveGameMeta() {
+    private fun saveGameMeta() {
         viewModelScope.launch(Dispatchers.IO) {
             //save game stats to correct player
             val field = if (isInvitationReceived) "playerB" else "playerA"
@@ -168,14 +168,7 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
         cancelTimer()
         question.postValue(QuestionData.waiting())
 
-
-        //val delay2Sec = PqTimerTask("delay2Sec $quesNo", 1, null, null, viewModelScope) {
-
         calculateAnswer(selectedOption)
-
-
-        //}
-        //delay2Sec.start()
 
     }
 
@@ -306,6 +299,7 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
         question.postValue(QuestionData.finished())
     }
 
+
     //invoked when this player abandoned the match
     fun onPlayerAbandoned() {
         cancelTimer()
@@ -319,8 +313,14 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
             //change room status to ABANDONED so that other player knows
             FirebaseApi.updateRoomField(roomId, "status", Const.STATUS_ABANDONED)
         }
+    }
 
+    fun pauseTimer() {
+        timer?.shutdown()
+    }
 
+    fun skipCurrentQuestion() {
+        onAnswerSubmitted("")
     }
 
     data class Progress(var timeStr: String = "0.0", var progress: Int = 0)

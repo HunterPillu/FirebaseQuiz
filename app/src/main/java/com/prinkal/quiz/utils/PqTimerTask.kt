@@ -55,7 +55,7 @@ class PqTimerTask(
      * we will let it finish, but not run it again.
      * Invocation has no additional effect if already shut down.
      */
-    private fun shutdown() {
+    fun shutdown() {
         keepRunning.set(false)
     }
 
