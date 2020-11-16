@@ -1,12 +1,12 @@
 package com.prinkal.quiz.data.api
 
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 import com.prinkal.quiz.data.model.*
 import com.prinkal.quiz.utils.Const
 import com.prinkal.quiz.utils.CustomLog
@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
+
 
 object FirebaseApi {
     private const val TAG = "FirebaseAPI"
@@ -78,19 +79,15 @@ object FirebaseApi {
             .await().toObject()
     }
 
-    suspend fun updateFirebaseToken() {
-        updateUserField(
-            hashMapOf<String, Any?>().apply {
-                this["firebaseToken"] =
-                    FirebaseAuth.getInstance().currentUser!!.getIdToken(true).await().token
-            }
-        )
+    suspend fun getFcmToken(): String? {
+        if (Firebase.auth.currentUser == null) return null
+        return FirebaseMessaging.getInstance().token.await()
     }
+
 
     // update generic data of any firebase
     suspend fun updateDbValue(map: Map<String, Any?>, ref: DocumentReference) {
         try {
-            //ref.update(field, value).await()
             ref.set(map, SetOptions.merge()).await()
         } catch (e: Exception) {
             CustomLog.e(TAG, e)
@@ -110,7 +107,7 @@ object FirebaseApi {
 
     // update field of user firebase
     suspend fun updateUserField(map: Map<String, Any?>) {
-        updateUserFieldById(FirebaseAuth.getInstance().currentUser!!.uid, map)
+        updateUserFieldById(Firebase.auth.currentUser!!.uid, map)
     }
 
 

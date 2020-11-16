@@ -4,10 +4,16 @@ import android.os.Bundle
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.prinkal.quiz.R
+import com.prinkal.quiz.data.api.FirebaseApi
 import com.prinkal.quiz.ui.base.BaseActivity
+import com.prinkal.quiz.ui.firebase.FirebaseData
 import com.prinkal.quiz.ui.main.viewmodel.HomeActivityViewModel
 import com.prinkal.quiz.utils.CustomLog
+import com.prinkal.quiz.utils.PrefUtil
 import com.prinkal.quiz.utils.Status
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class HomeActivity : BaseActivity() {
     private lateinit var viewModel: HomeActivityViewModel
@@ -18,6 +24,24 @@ class HomeActivity : BaseActivity() {
         setupViewModel()
         setupDataObserver()
         setupInvitationObserver()
+        updateFcmToken()
+    }
+
+
+    /*NEED:
+    to update FCM token and save it sharepreference ,context must be passed to other class
+    and I dont want that thats why data-part is handled on view instead of viewmodel*/
+    private fun updateFcmToken() {
+        GlobalScope.launch(Dispatchers.IO) {
+            val oldToken = PrefUtil.getToken(this@HomeActivity)
+            val newToken = FirebaseApi.getFcmToken()
+            if (oldToken != newToken && newToken != null) {
+                val map = hashMapOf<String, Any?>()
+                map["firebaseToken"] = newToken
+                FirebaseApi.updateUserFieldById(FirebaseData.myID, map)
+                PrefUtil.saveToken(this@HomeActivity, newToken)
+            }
+        }
     }
 
     override fun fetchViewModel(): HomeActivityViewModel = viewModel

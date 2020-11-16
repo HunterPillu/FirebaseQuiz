@@ -89,6 +89,11 @@ abstract class BaseActivity : AppCompatActivity(), FragmentEventListener {
                     //invitation sent,show dialog
                     //here keyId is quizId
                     showInvitedDialog(it.data!!, it.keyId!!)
+                    fetchViewModel().sendInviteNotification(
+                        it.data.firebaseToken,
+                        getString(R.string.pq_invitation_received),
+                        getString(R.string.pq_invitation_received_push)
+                    )
                 }
                 GameEvent.INVITE_ERROR -> {
                     //invitation sent,show dialog

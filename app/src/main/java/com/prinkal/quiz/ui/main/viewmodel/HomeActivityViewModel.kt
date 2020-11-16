@@ -8,7 +8,10 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.prinkal.quiz.R
 import com.prinkal.quiz.data.api.FirebaseApi
+import com.prinkal.quiz.data.api.RetrofitBuilder
 import com.prinkal.quiz.data.model.Invite
+import com.prinkal.quiz.data.model.PQData
+import com.prinkal.quiz.data.model.PQNotification
 import com.prinkal.quiz.data.model.User
 import com.prinkal.quiz.ui.firebase.FirebaseData
 import com.prinkal.quiz.utils.*
@@ -22,11 +25,9 @@ class HomeActivityViewModel : ViewModel() {
     private val data = MutableLiveData<Resource<Any>>()
     private val invitation = MutableLiveData<Invitation<User>>()
 
-    //private var dataListener: ListenerRegistration? = null
     private val TAG = HomeActivityViewModel::class.java.name
 
     //protected lateinit var connectionLiveData: ConnectionLiveData
-    //private var callRef: DocumentReference? = null
 
     init {
         data.postValue(Resource.idle())
@@ -50,8 +51,7 @@ class HomeActivityViewModel : ViewModel() {
         FirebaseData.init()
         //listen for game invitation
         listenForInvitation()
-        //callRef = FirebaseData.getPlayerReference(FirebaseData.myID)
-        //dataListener = callRef?.addSnapshotListener(callListener)
+
     }
 
     //listen GAME_STATUS change on USER table
@@ -114,51 +114,46 @@ class HomeActivityViewModel : ViewModel() {
         //show dialog
         invitation.postValue(Invitation.sendInvite(opponent, quizId))
 
-        FirebaseData.setItem(opponent)
-
         viewModelScope.launch(Dispatchers.IO) {
             // set my game status to "WAITING"
-            FirebaseApi.updateDbValue(
+            FirebaseApi.updateUserFieldById(
+                FirebaseData.myID,
                 hashMapOf<String, Any?>().apply {
                     this["status"] = Const.STATUS_WAITING
                     this["opponentId"] = ""
                     this["ts"] = Utils.getCurrentTimeInMillis()
-                },
-                FirebaseData.getPlayerReference(FirebaseData.myID)
+                }
             )
 
             //set opponent game status to "STATUS_INVITATION_RECEIVED"
             //save current user id to opponent's room so that he knows who is inviting him
-            FirebaseApi.updateDbValue(
+            FirebaseApi.updateUserFieldById(
+                opponent.uid,
                 hashMapOf<String, Any?>().apply {
                     this["status"] = Const.STATUS_INVITATION_RECEIVED
                     this["opponentId"] = FirebaseData.myID
                     this["ts"] = Utils.getCurrentTimeInMillis()
-                },
-                FirebaseData.getPlayerReference(opponent.uid)
+                }
             )
-
-
         }
     }
 
-    /*private val callListener = object : EventListener<DocumentSnapshot> {
-        override fun onEvent(snapshot: DocumentSnapshot?, e: FirebaseFirestoreException?) {
-            if (e != null) {
-                CustomLog.e(TAG, "Listen failed.", e)
-                return
-            }
-
-            if (snapshot != null && snapshot.exists()) {
-                CustomLog.d(TAG, "Current data: ${snapshot.data}")
-                val invitation = snapshot.toObject(Invite::class.java)
-                if (null != invitation
-                    && invitation.status == Const.STATUS_INVITATION_RECEIVED
-                //&& !Utils.hasInvitationExpired(invitation.ts)
-                )
-                    onInvitationReceived(invitation.opponentId)
+    fun sendInviteNotification(firebaseToken: String?, title: String, body: String) {
+        if (null == firebaseToken) return
+        viewModelScope.launch(Dispatchers.IO) {
+            val data = PQData(title, body, FirebaseData.myID)
+            val notificationModel = PQNotification(to = firebaseToken, data = data)
+            try {
+                val result = RetrofitBuilder.apiService.sendInviteNotification(notificationModel)
+                if (null != result) {
+                    CustomLog.e(TAG, result.toString())
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                CustomLog.e(TAG, e)
             }
         }
-    }*/
+    }
+
 
 }
