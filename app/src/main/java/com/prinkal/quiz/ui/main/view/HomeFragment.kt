@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import com.prinkal.quiz.R
 import com.prinkal.quiz.data.model.Course
@@ -27,10 +28,12 @@ class HomeFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
     ListItemClickListener<Int, Quiz> {
 
     companion object {
-        const val TAG: String = "home_fragment"
+        internal val TAG: String = HomeFragment::class.java.name
 
         fun newInstance() = HomeFragment()
     }
+
+
 
     private lateinit var courseAdapter: CourseSpinnerAdapter
     private lateinit var adapter: QuizAdapter

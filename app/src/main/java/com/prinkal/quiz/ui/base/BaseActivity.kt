@@ -20,7 +20,7 @@ abstract class BaseActivity : AppCompatActivity(), FragmentEventListener {
     abstract fun fetchViewModel(): HomeActivityViewModel
 
 
-    override fun onBackPressed() {
+    override fun onCustomBackPressed() {
         val c = supportFragmentManager.backStackEntryCount
         CustomLog.d(TAG, "total entry = $c")
         if (c > 1) {
@@ -56,10 +56,6 @@ abstract class BaseActivity : AppCompatActivity(), FragmentEventListener {
     /*fun getCurrentFragment(): BaseFragment? {
         return getFragmentAt(getFragmentCount() - 1)
     }*/
-
-    override fun updateToolbarTitle(title: String) {
-        //handle this on child class
-    }
 
     //invoked when user want to sent invite to opponent
     override fun onInviteOpponent(opponent: User, quizId: String) {

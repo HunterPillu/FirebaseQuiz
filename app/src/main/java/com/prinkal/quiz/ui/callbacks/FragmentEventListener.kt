@@ -5,10 +5,9 @@ import com.prinkal.quiz.ui.base.BaseFragment
 
 
 interface FragmentEventListener {
-    fun updateToolbarTitle(title: String)
     fun openFragment(fragment: BaseFragment)
     fun onInviteOpponent(opponent: User, quizId: String)
-    fun onBackPressed()
+    fun onCustomBackPressed()
     //fun getConnectionObject(): ConnectionLiveData
     fun firebaseInitGame()
 

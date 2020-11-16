@@ -6,7 +6,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -41,21 +41,61 @@ class MultiQuizFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         roomId = arguments?.getString("roomId")!!
-        requireActivity()
-            .onBackPressedDispatcher
-            .addCallback(this, onBackPressedCallback)
     }
 
-    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            CustomLog.d(TAG, "Fragment back pressed invoked")
+    override fun onBackPressed() {
+        CustomLog.d(TAG, "child onBackPressed invoked")
+        //intercept back button and show confirm dialog
+        showConfirmQuitDialog()
+    }
 
-            // if you want onBackPressed() to be called as normal afterwards
-            /*if (isEnabled) {
-                isEnabled = false
-                onBackPressed()
-            }*/
+    private fun showConfirmQuitDialog() {
+        val builder = AlertDialog.Builder(requireContext())
+        //set title for alert dialog
+        builder.setTitle(R.string.pq_leave_game_dialog)
+        //set message for alert dialog
+        builder.setMessage(R.string.pq_leave_game_dialog_desc)
+        builder.setIcon(android.R.drawable.ic_dialog_alert)
+
+        //performing positive action
+        builder.setPositiveButton(R.string.pq_yes) { dialogInterface, which ->
+            viewModel.onPlayerAbandoned()
+            super.removedOnBackCallback()
+            openFragment(ResultMultiQuizFragment.newInstance(roomId))
         }
+        //performing negative action
+        builder.setNegativeButton(R.string.pq_no) { dialogInterface, which ->
+            dialogInterface.dismiss()
+        }
+        // Create the AlertDialog
+        val alertDialog: AlertDialog = builder.create()
+        // Set other dialog properties
+        alertDialog.setCancelable(true)
+        alertDialog.show()
+    }
+
+    private fun showOppAbandonedDialog(opponentName: String) {
+        val builder = AlertDialog.Builder(requireContext())
+        //set title for alert dialog
+        builder.setTitle(R.string.pq_abandoned_game_dialog)
+        //set message for alert dialog
+        builder.setMessage(getString(R.string.pq_abandoned_game_dialog_desc, opponentName))
+        builder.setIcon(android.R.drawable.ic_dialog_alert)
+
+        //performing positive action
+        builder.setPositiveButton(R.string.pq_yes) { dialogInterface, which ->
+            super.removedOnBackCallback()
+            viewModel.onGameFinished()
+        }
+        /*//performing negative action
+        builder.setNegativeButton(R.string.pq_no) { dialogInterface, which ->
+            dialogInterface.dismiss()
+        }*/
+        // Create the AlertDialog
+        val alertDialog: AlertDialog = builder.create()
+        // Set other dialog properties
+        alertDialog.setCancelable(false)
+        alertDialog.show()
     }
 
 
@@ -215,9 +255,7 @@ class MultiQuizFragment : BaseFragment() {
             CustomLog.e(TAG, "Room observer ${it.status.name}")
             when (it.status) {
                 Status.SUCCESS -> {
-                    it.data?.let { room ->
-                        onRoomDataUpdated(room)
-                    }
+                    onRoomDataUpdated(it.data!!)
                 }
                 Status.ERROR -> {
 
@@ -258,14 +296,16 @@ class MultiQuizFragment : BaseFragment() {
                 }
 
                 QuestionEvent.FINISHED -> {
-                    showMsg(requireContext(), "finished")
+                    CustomLog.d(TAG, "finished")
                     //all question finished ,one of the player finished the quiz
                     openFragment(ResultMultiQuizFragment.newInstance(roomId))
 
-                    /*requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.container, ResultMultiQuizFragment.newInstance(roomId))
-                        .addToBackStack(null)
-                        .commit()*/
+                }
+                QuestionEvent.ABANDONED -> {
+                    CustomLog.d(TAG, "ABANDONED")
+                    //all question finished ,one of the player finished the quiz
+                    //here "selectedOption" is Opponent's name
+                    showOppAbandonedDialog(it.selectedOption)
                 }
             }
         })

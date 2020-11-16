@@ -52,7 +52,7 @@ object Const {
     const val STATUS_PREPARING = 6
     const val STATUS_PREPARED = 7
     const val STATUS_FINISHED = 8
-    const val STATUS_ABONDONED = 9
+    const val STATUS_ABANDONED = 9
 
     const val CAN_REQUEST_IF_OFFLINE = true
 }

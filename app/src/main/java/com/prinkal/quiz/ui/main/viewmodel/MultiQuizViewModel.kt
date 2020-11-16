@@ -64,13 +64,14 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
                     CustomLog.e(TAG, it.toString())
                     CustomLog.e(TAG, "STATUS : ${it.status}")
                     if (it.status == Const.STATUS_ACCEPTED) {
-                        CustomLog.e(TAG, "00000000000000")
                         //inject Quiz and Question only if status = STATUS_ACCEPTED because opponent just accepted the opponent request
                         injectQuizInRoom(it)
                     } else if (it.status == Const.STATUS_PREPARING) {
-                        CustomLog.e(TAG, "5555555555555")
                         //fetch quiz data for playerB
                         fetchQuizFromRoom(it)
+                    } else if (it.status == Const.STATUS_ABANDONED) {
+                        //opponent abandoned the match
+                        onOpponentAbandoned(it)
                     } else {
                         room.postValue(Resource.success(it))
                     }
@@ -144,17 +145,15 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
             startTimer(ques.time)
             question.postValue(QuestionData.nextQuestion(ques))
         } else {
-            //one of the players finished the quiz
-            question.postValue(QuestionData.finished())
-            viewModelScope.launch(Dispatchers.IO) {
+            onGameFinished()
+        }
+    }
 
-                //used to notify other player that this player has finished
-                gameMeta.status = Const.STATUS_FINISHED
-
-                //save game stats to correct player
-                val field = if (isInvitationReceived) "playerB" else "playerA"
-                FirebaseApi.updateRoomField(roomId, field, gameMeta)
-            }
+    fun saveGameMeta() {
+        viewModelScope.launch(Dispatchers.IO) {
+            //save game stats to correct player
+            val field = if (isInvitationReceived) "playerB" else "playerA"
+            FirebaseApi.updateRoomField(roomId, field, gameMeta)
         }
     }
 
@@ -220,7 +219,7 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
             //saving game stats : current score
             gameMeta.score = currentScore
 
-            //optimization : aving score on room.playerBScore instead of room.playerA.score
+            //optimization : saving score on room.playerAScore instead of room.playerA.score
             val field = if (isInvitationReceived) "playerBScore" else "playerAScore"
             FirebaseApi.updateRoomField(roomId, field, currentScore)
 
@@ -280,6 +279,48 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
     //cancel timer if running
     private fun cancelTimer() {
         timer?.cancel()
+    }
+
+    //invoked when this opponent abandoned the match
+    private fun onOpponentAbandoned(room: GameRoom) {
+
+        //optional : self abandon already handled on Fragment class
+        if (gameMeta.status == Const.STATUS_ABANDONED) {
+            return
+        }
+
+        cancelTimer()
+        val oppName =
+            if (isInvitationReceived) room.playerA!!.name else room.playerB!!.name
+
+        question.postValue(QuestionData.abandoned(oppName))
+    }
+
+    fun onGameFinished() {
+
+        //saving game stats : used to notify other player that this player has finished
+        gameMeta.status = Const.STATUS_FINISHED
+        saveGameMeta()
+
+        //one of the players finished the quiz
+        question.postValue(QuestionData.finished())
+    }
+
+    //invoked when this player abandoned the match
+    fun onPlayerAbandoned() {
+        cancelTimer()
+        viewModelScope.launch(Dispatchers.IO) {
+            //optional : change current user status to abandoned
+            gameMeta.status = Const.STATUS_ABANDONED
+
+            //save game stats to show on Result screen
+            saveGameMeta()
+
+            //change room status to ABANDONED so that other player knows
+            FirebaseApi.updateRoomField(roomId, "status", Const.STATUS_ABANDONED)
+        }
+
+
     }
 
     data class Progress(var timeStr: String = "0.0", var progress: Int = 0)

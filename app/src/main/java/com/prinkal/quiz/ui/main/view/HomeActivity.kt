@@ -18,14 +18,9 @@ class HomeActivity : BaseActivity() {
         setupViewModel()
         setupDataObserver()
         setupInvitationObserver()
-        /*if (savedInstanceState == null) {
-            CustomLog.e(TAG, "savedInstanceState")
-            openRequiredFragment()
-        }*/
     }
 
     override fun fetchViewModel(): HomeActivityViewModel = viewModel
-
 
     private fun setupViewModel() {
         viewModel = ViewModelProvider(this).get(HomeActivityViewModel::class.java)

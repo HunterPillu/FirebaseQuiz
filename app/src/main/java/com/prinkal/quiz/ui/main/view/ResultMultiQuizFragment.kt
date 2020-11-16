@@ -6,7 +6,6 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import com.prinkal.quiz.R
 import com.prinkal.quiz.data.model.GameMeta
@@ -46,21 +45,14 @@ class ResultMultiQuizFragment : BaseFragment() {
         super.onCreate(savedInstanceState)
         roomId = arguments?.getString("roomId")!!
         isInvitationReceived = (FirebaseData.myID != roomId)
-        requireActivity()
-            .onBackPressedDispatcher
-            .addCallback(this, onBackPressedCallback)
+
     }
 
-    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            CustomLog.d(TAG, "Fragment back pressed invoked")
-
-            // if you want onBackPressed() to be called as normal afterwards
-            /*if (isEnabled) {
-                isEnabled = false
-                onBackPressed()
-            }*/
-        }
+    override fun onBackPressed() {
+        super.removedOnBackCallback()
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.container, HomeFragment.newInstance())
+            .commit()
     }
 
 
@@ -80,11 +72,12 @@ class ResultMultiQuizFragment : BaseFragment() {
 
     private fun setupUI() {
         tvTitle.text = getString(R.string.pq_result)
+        ivBack.setOnClickListener {
+            onBackPressed()
+        }
         bHome.setOnClickListener {
             //clearStack()
-            requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.container, HomeFragment.newInstance())
-                .commit()
+            onBackPressed()
         }
     }
 
@@ -123,6 +116,10 @@ class ResultMultiQuizFragment : BaseFragment() {
         }
 
         if (room.status == Const.STATUS_IN_GAME && oppGameMeta.status == Const.STATUS_FINISHED) {
+            viewModel.updateRoomStatusToFinished()
+        }
+
+        if (room.status == Const.STATUS_ABANDONED && oppGameMeta.status == Const.STATUS_ABANDONED) {
             viewModel.updateRoomStatusToFinished()
         }
 

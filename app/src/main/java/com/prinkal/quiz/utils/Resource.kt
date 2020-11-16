@@ -49,7 +49,7 @@ data class Invitation<out T>(
 
 data class QuestionData<out T>(
     val status: QuestionEvent,
-    val data: T?,
+    val data: T? = null,
     var selectedOption: String = "",
     var correctAnswer: String = "",
 ) {
@@ -57,7 +57,7 @@ data class QuestionData<out T>(
     companion object {
 
         fun <T> finished(): QuestionData<T> {
-            return QuestionData(QuestionEvent.FINISHED, null)
+            return QuestionData(QuestionEvent.FINISHED)
         }
 
         fun <T> nextQuestion(data: T): QuestionData<T> {
@@ -65,18 +65,17 @@ data class QuestionData<out T>(
         }
 
         fun <T> waiting(): QuestionData<T> {
-            return QuestionData(QuestionEvent.WAITING, null)
+            return QuestionData(QuestionEvent.WAITING)
         }
 
         fun <T> loader(isCorrect: Boolean): QuestionData<T> {
             return if (isCorrect) QuestionData(
-                QuestionEvent.LOADER_CORRECT,
-                null
-            ) else QuestionData(QuestionEvent.LOADER_INCORRECT, null)
+                QuestionEvent.LOADER_CORRECT
+            ) else QuestionData(QuestionEvent.LOADER_INCORRECT)
         }
 
-        fun <T> incorrectLoader(): QuestionData<T> {
-            return QuestionData(QuestionEvent.LOADER_INCORRECT, null)
+        fun <T> abandoned(userName: String): QuestionData<T> {
+            return QuestionData(QuestionEvent.ABANDONED, selectedOption = userName)
         }
 
         fun <T> showAnswer(selectedOption: String, correctAnswer: String): QuestionData<T> {

@@ -38,4 +38,10 @@
     <string name="pq_lifeline_used">Lifeline Used</string>
     <string name="pq_total_incorrect">Incorrect</string>
     <string name="pq_result">Result</string>
+    <string name="pq_leave_game_dialog">Quit?</string>
+    <string name="pq_leave_game_dialog_desc">Are you sure you want to quit this game ?</string>
+    <string name="pq_no">No</string>
+    <string name="pq_yes">Yes</string>
+    <string name="pq_abandoned_game_dialog">Abandoned !</string>
+    <string name="pq_abandoned_game_dialog_desc">%s quits the game so you win by default.</string>
 </resources>
