@@ -19,5 +19,6 @@
     <!--<<START >> :both intrinsic margin must be in 2:1 ratio-->
     <dimen name="margin_intrisic_result_card">12dp</dimen>
     <dimen name="margin_half_intrisic_result_card">6dp</dimen>
+    <dimen name="pq_size_quiz_marker">24dp</dimen>
     <!--<<END>>-->
 </resources>

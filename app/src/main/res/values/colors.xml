@@ -32,8 +32,8 @@
     <color name="splash_background">@color/colorPrimary</color>
 
     <color name="divider">@color/gray</color>
-    <color name="offline">#FB1F05</color>
-    <color name="online">#009688</color>
+    <color name="offline">#D0021B</color>
+    <color name="online">#9DC34D</color>
     <color name="disabled">@color/gray</color>
 
     <color name="palette_red">#FB1F05</color>
@@ -43,8 +43,8 @@
     <color name="pq_question_text">@color/text_primary</color>
     <color name="pq_option_color_default">@color/text_primary</color>
     <color name="pq_card_color_default">@color/white</color>
-    <color name="pq_card_color_correct">#009688</color>
-    <color name="pq_card_color_incorrect">#FB1F05</color>
+    <color name="pq_card_color_correct">#9DC34D</color>
+    <color name="pq_card_color_incorrect">#D0021B</color>
     <color name="pq_option_color_selected">@color/white</color>
     <color name="progress_question_track">#44ffffff</color>
     <color name="progress_question_indicator">@color/colorPrimary</color>

@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import com.airbnb.lottie.LottieAnimationView
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textview.MaterialTextView
 import com.prinkal.quiz.R
@@ -17,10 +18,7 @@ import com.prinkal.quiz.data.model.Question
 import com.prinkal.quiz.ui.base.BaseFragment
 import com.prinkal.quiz.ui.base.QuizViewModelFactory
 import com.prinkal.quiz.ui.main.viewmodel.MultiQuizViewModel
-import com.prinkal.quiz.utils.Const
-import com.prinkal.quiz.utils.CustomLog
-import com.prinkal.quiz.utils.QuestionEvent
-import com.prinkal.quiz.utils.Status
+import com.prinkal.quiz.utils.*
 import kotlinx.android.synthetic.main.pq_body_multi_quiz.*
 import kotlinx.android.synthetic.main.pq_fragment_multi_quiz.*
 import kotlinx.android.synthetic.main.pq_header_multi_quiz.*
@@ -199,19 +197,21 @@ class MultiQuizFragment : BaseFragment() {
 
     private fun updateCorrectOptionColor(selectedOption: String, answer: String) {
 
-        //highlight correct answer
-        when (answer) {
-            tvOptA.text.toString() -> {
-                updateCardColorAsCorrect(cvOptA, tvOptA)
-            }
-            tvOptB.text.toString() -> {
-                updateCardColorAsCorrect(cvOptB, tvOptB)
-            }
-            tvOptC.text.toString() -> {
-                updateCardColorAsCorrect(cvOptC, tvOptC)
-            }
-            tvOptD.text.toString() -> {
-                updateCardColorAsCorrect(cvOptD, tvOptD)
+        if (Config.CAN_SHOW_CORRECT_ANSWER || selectedOption == answer) {
+            //highlight correct answer
+            when (answer) {
+                tvOptA.text.toString() -> {
+                    updateCardColorAsCorrect(cvOptA, tvOptA)
+                }
+                tvOptB.text.toString() -> {
+                    updateCardColorAsCorrect(cvOptB, tvOptB)
+                }
+                tvOptC.text.toString() -> {
+                    updateCardColorAsCorrect(cvOptC, tvOptC)
+                }
+                tvOptD.text.toString() -> {
+                    updateCardColorAsCorrect(cvOptD, tvOptD)
+                }
             }
         }
 
@@ -232,6 +232,8 @@ class MultiQuizFragment : BaseFragment() {
                     updateCardColorAsInCorrect(cvOptD, tvOptD)
                 }
             }
+        } else if (Config.CAN_SHOW_CORRECT_ANSWER) {
+
         }
     }
 
@@ -307,6 +309,7 @@ class MultiQuizFragment : BaseFragment() {
                 }
                 QuestionEvent.ANSWER -> {
                     updateCorrectOptionColor(it.selectedOption, it.correctAnswer)
+                    addShowMarker(it.resId)
                 }
 
                 QuestionEvent.FINISHED -> {
@@ -323,6 +326,13 @@ class MultiQuizFragment : BaseFragment() {
                 }
             }
         })
+    }
+
+    private fun addShowMarker(resId: Int) {
+        val lavMarker: LottieAnimationView =
+            layoutInflater.inflate(R.layout.pq_quiz_marker, llMarkerA, false) as LottieAnimationView
+        lavMarker.setAnimation(resId)
+        llMarkerA.addView(lavMarker)
     }
 
     //while waiting user will not be able to click options
@@ -362,6 +372,7 @@ class MultiQuizFragment : BaseFragment() {
             pbLoader.visibility = GONE
             cvHeader.visibility = VISIBLE
             cvBody.visibility = VISIBLE
+            cvMarker.visibility = VISIBLE
 
             if (viewModel.hasInvitationReceived()) {
                 tvPlayerA.text = room.playerB?.name

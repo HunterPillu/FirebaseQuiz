@@ -180,13 +180,15 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
         //check answer if correct or incorrect
         val questionVo = quiz.questions!![quesNo]
         val isCorrect = selectedOption == questionVo.answer
-
+        var markerRes = R.raw.yellow_minus
         if (selectedOption != "") {
             //saving game stats : correct answer count
             gameMeta.totalAttempted += 1
         }
 
         if (isCorrect) {
+            markerRes = R.raw.green_tick
+
             //saving game stats : correct answer count
             gameMeta.totalCorrect.plus(1)
 
@@ -206,6 +208,7 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
             if (selectedOption != "") {
                 //saving game stats : incorrect answer count
                 gameMeta.totalIncorrect.plus(1)
+                markerRes = R.raw.red_cross
             }
         }
 
@@ -221,7 +224,7 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
             FirebaseApi.updateRoomField(roomId, field, currentScore)
 
             //update ui to show current question result
-            question.postValue(QuestionData.showAnswer(selectedOption, questionVo.answer))
+            question.postValue(QuestionData.showAnswer(selectedOption, questionVo.answer,markerRes))
             delay(1000)
 
             //show loader on ui

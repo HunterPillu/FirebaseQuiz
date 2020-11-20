@@ -17,8 +17,7 @@
         android:layout_height="match_parent"
         android:layout_marginHorizontal="@dimen/margin_quarter"
         android:layout_marginVertical="@dimen/margin_mini"
-        android:layout_weight="2"
-        app:cardElevation="@dimen/pq_elevation_card_quiz">
+        android:layout_weight="2.5">
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvQuestion"
@@ -50,8 +49,7 @@
             android:layout_height="match_parent"
             android:layout_marginHorizontal="@dimen/margin_mini"
             android:layout_weight="1"
-            android:tag="A"
-            app:cardElevation="@dimen/pq_elevation_card_quiz">
+            android:tag="A">
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tvOptA"
@@ -67,8 +65,7 @@
             android:layout_height="match_parent"
             android:layout_marginHorizontal="@dimen/margin_mini"
             android:layout_weight="1"
-            android:tag="B"
-            app:cardElevation="@dimen/pq_elevation_card_quiz">
+            android:tag="B">
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tvOptB"
@@ -94,8 +91,7 @@
             android:layout_height="match_parent"
             android:layout_marginHorizontal="@dimen/margin_mini"
             android:layout_weight="1"
-            android:tag="C"
-            app:cardElevation="@dimen/pq_elevation_card_quiz">
+            android:tag="C">
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tvOptC"
@@ -111,8 +107,7 @@
             android:layout_height="match_parent"
             android:layout_marginHorizontal="@dimen/margin_mini"
             android:layout_weight="1"
-            android:tag="D"
-            app:cardElevation="@dimen/pq_elevation_card_quiz">
+            android:tag="D">
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tvOptD"

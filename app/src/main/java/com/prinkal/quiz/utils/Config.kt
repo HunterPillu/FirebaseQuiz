@@ -10,4 +10,5 @@ object Config {
 
     const val PUSH_NOTIFICATION_ID = 122
     const val PUSH_NOTIFICATION_CHANNEL_NAME = "PQuiz"
+    const val CAN_SHOW_CORRECT_ANSWER = true
 }

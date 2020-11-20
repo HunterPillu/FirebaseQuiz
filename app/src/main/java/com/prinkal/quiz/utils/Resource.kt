@@ -77,12 +77,16 @@ data class QuestionData<out T>(
             return QuestionData(status = QuestionEvent.ABANDONED, selectedOption = userName)
         }
 
-        fun <T> showAnswer(selectedOption: String, correctAnswer: String): QuestionData<T> {
+        fun <T> showAnswer(
+            selectedOption: String,
+            correctAnswer: String,
+            markerRes: Int
+        ): QuestionData<T> {
             return QuestionData(
                 status = QuestionEvent.ANSWER,
-                data = null,
                 selectedOption = selectedOption,
-                correctAnswer = correctAnswer
+                correctAnswer = correctAnswer,
+                resId = markerRes
             )
         }
 
