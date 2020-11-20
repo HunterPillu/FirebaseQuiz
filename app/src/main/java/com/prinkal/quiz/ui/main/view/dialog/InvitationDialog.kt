@@ -189,7 +189,7 @@ class InvitationDialog : BottomSheetDialogFragment() {
         val roomId = viewModel.getRoomId()
         requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.container, MultiQuizFragment.newInstance(roomId))
-            .addToBackStack(null)
+            //.addToBackStack(null)
             .commit()
         /*val intent: Intent = when {
             FirebaseAuth.getInstance().currentUser != null -> {

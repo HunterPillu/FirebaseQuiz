@@ -21,6 +21,11 @@ class ResultMultiQuizViewModel(private val roomId: String) : ViewModel() {
         internal val TAG = ResultMultiQuizViewModel::class.java.name
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        CustomLog.e(TAG, "onCleared")
+    }
+
     init {
         CustomLog.d(TAG, "init")
         room.postValue(Resource.loading(null))

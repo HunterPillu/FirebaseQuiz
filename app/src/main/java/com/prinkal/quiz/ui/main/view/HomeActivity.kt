@@ -69,10 +69,10 @@ class HomeActivity : BaseActivity() {
         supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         when (destScreen) {
             "home" -> {
-                openFragment(HomeFragment.newInstance())
+                openFragment(HomeFragment.newInstance(),true)
             }
             "login" -> {
-                openFragment(LoginFragment.newInstance())
+                openFragment(LoginFragment.newInstance(),true)
             }
             else -> {
                 CustomLog.d(Companion.TAG, "bundle data not available")

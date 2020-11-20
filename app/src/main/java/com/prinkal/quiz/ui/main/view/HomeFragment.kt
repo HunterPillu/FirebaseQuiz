@@ -151,7 +151,7 @@ class HomeFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
     }
 
     override fun onItemClick(type: Int, item: Quiz) {
-        openFragment(PlayerListFragment.newInstance(item.uid))
+        addOpenFragment(PlayerListFragment.newInstance(item.uid))
     }
 
 }

@@ -1,17 +1,19 @@
 package com.prinkal.quiz.ui.main.view
 
+import android.animation.Animator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.prinkal.quiz.R
 import com.prinkal.quiz.data.model.GameMeta
 import com.prinkal.quiz.data.model.GameRoom
 import com.prinkal.quiz.ui.base.BaseFragment
 import com.prinkal.quiz.ui.base.QuizViewModelFactory
+import com.prinkal.quiz.ui.callbacks.LottieAnimationListener
 import com.prinkal.quiz.ui.firebase.FirebaseData
 import com.prinkal.quiz.ui.main.viewmodel.ResultMultiQuizViewModel
 import com.prinkal.quiz.utils.Const
@@ -49,10 +51,14 @@ class ResultMultiQuizFragment : BaseFragment() {
     }
 
     override fun onBackPressed() {
-        super.removedOnBackCallback()
+        //super.removedOnBackCallback()
+        //requireActivity().supportFragmentManager.findFragmentByTag(HomeFragment::class.java.name)
         requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.container, HomeFragment.newInstance())
+            .remove(this)
+            //.show(requireActivity().supportFragmentManager.findFragmentByTag(HomeFragment::class.java.name)!!)
+            //.addToBackStack(null)
             .commit()
+        super.onBackPressed()
     }
 
 
@@ -72,11 +78,16 @@ class ResultMultiQuizFragment : BaseFragment() {
 
     private fun setupUI() {
         tvTitle.text = getString(R.string.pq_result)
+        lavBg.addAnimatorListener(object : LottieAnimationListener() {
+            override fun onAnimationEnd(animation: Animator?) {
+                lavBg.visibility = GONE
+            }
+        })
+
         ivBack.setOnClickListener {
             onBackPressed()
         }
         bHome.setOnClickListener {
-            //clearStack()
             onBackPressed()
         }
     }
@@ -88,9 +99,6 @@ class ResultMultiQuizFragment : BaseFragment() {
             when (it.status) {
                 Status.SUCCESS -> {
                     onRoomDataUpdated(it.data!!)
-                }
-                Status.ERROR -> {
-
                 }
                 Status.LOADING -> {
                     pbMain.visibility = VISIBLE
@@ -135,12 +143,28 @@ class ResultMultiQuizFragment : BaseFragment() {
             if (winStatus) {
                 tvCongrats.text = getString(R.string.pq_congratulation)
                 tvWonBy.text = getString(R.string.pq_won_by_user_, oppGameMeta.name)
+                lavCongrats.setAnimationFromUrl("https://assets7.lottiefiles.com/packages/lf20_LoU6vj.json")
+                //lavCongrats.setAnimation(R.raw.roger)
+                lavHeader.setAnimationFromUrl("https://assets9.lottiefiles.com/packages/lf20_u4yrau.json")
             } else {
                 tvCongrats.text = getString(R.string.pq_oops)
                 tvWonBy.text = getString(R.string.pq_lose_by_user_, oppGameMeta.name)
+                lavCongrats.setAnimation(R.raw.sad_emogi)
+                lavHeader.setAnimationFromUrl("https://assets9.lottiefiles.com/packages/lf20_u4yrau.json")
             }
             pbWait.visibility = GONE
-            ivCongrats.visibility = VISIBLE
+            lavCongrats.visibility = VISIBLE
+            lavHeader.visibility = VISIBLE
+            if (!lavCongrats.isAnimating) {
+                lavHeader.playAnimation()
+                lavCongrats.playAnimation()
+            }
+            lavBg.visibility = VISIBLE
+            if (!lavBg.isAnimating) {
+                lavBg.setAnimationFromUrl("https://assets7.lottiefiles.com/datafiles/T11VsOdRDtsaJlw/data.json")
+                lavBg.playAnimation()
+            }
+
         }
     }
 
@@ -163,7 +187,7 @@ class ResultMultiQuizFragment : BaseFragment() {
     }
 
     private fun setupViewModel() {
-        viewModel = ViewModelProvider(
+        viewModel = ViewModelProviders.of(
             this,
             QuizViewModelFactory(roomId)
         ).get(ResultMultiQuizViewModel::class.java)

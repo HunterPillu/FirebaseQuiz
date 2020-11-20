@@ -56,7 +56,11 @@ open class BaseFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     fun openFragment(fragment: BaseFragment) {
-        listener.openFragment(fragment)
+        listener.openFragment(fragment, false)
+    }
+
+    fun addOpenFragment(fragment: BaseFragment) {
+        listener.openFragment(fragment, true)
     }
 
     fun sendGameInvite(item: User, quizId: String) {

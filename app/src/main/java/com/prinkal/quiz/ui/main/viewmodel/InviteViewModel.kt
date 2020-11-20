@@ -24,7 +24,6 @@ class InviteViewModel(private val player: User, private val quizId: String) :
     private val mElapsedTime = MutableLiveData<Long>()
     private var timer: CountDownTimer? = null
 
-
     companion object {
         internal val TAG = InviteViewModel::class.java.name
     }
@@ -65,6 +64,7 @@ class InviteViewModel(private val player: User, private val quizId: String) :
 
     override fun onCleared() {
         super.onCleared()
+        CustomLog.e(TAG, "onCleared")
         cancelTimer()
     }
 

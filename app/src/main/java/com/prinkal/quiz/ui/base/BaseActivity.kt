@@ -38,11 +38,18 @@ abstract class BaseActivity : AppCompatActivity(), FragmentEventListener {
         return supportFragmentManager.backStackEntryCount
     }
 
-    override fun openFragment(fragment: BaseFragment) {
-        //this.fragment = fragment
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.container, fragment, Integer.toString(getFragmentCount()))
-            .addToBackStack(null).commit()
+    override fun openFragment(fragment: BaseFragment, canBeStacked: Boolean) {
+        if (canBeStacked) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.container, fragment, fragment::class.java.name)
+                .addToBackStack(null)
+                .commit()
+        } else {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.container, fragment, fragment::class.java.name)
+                //.addToBackStack(null)
+                .commit()
+        }
     }
 
     private fun getFragmentAt(index: Int): BaseFragment? {

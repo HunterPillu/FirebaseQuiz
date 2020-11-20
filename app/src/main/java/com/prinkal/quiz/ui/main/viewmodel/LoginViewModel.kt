@@ -4,10 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import com.prinkal.quiz.data.api.FirebaseApi
 import com.prinkal.quiz.data.model.User
+import com.prinkal.quiz.utils.CustomLog
 import com.prinkal.quiz.utils.Resource
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -15,6 +16,15 @@ class LoginViewModel : ViewModel() {
 
     private lateinit var job: Job
     private val loginResult = MutableLiveData<Resource<String>>()
+
+    override fun onCleared() {
+        super.onCleared()
+        CustomLog.e(TAG, "onCleared")
+    }
+
+    companion object {
+        internal val TAG = LoginViewModel::class.java.name
+    }
 
     init {
         loginResult.postValue(Resource.idle())
@@ -43,11 +53,6 @@ class LoginViewModel : ViewModel() {
         }
 
 
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        // job.cancel()
     }
 
 

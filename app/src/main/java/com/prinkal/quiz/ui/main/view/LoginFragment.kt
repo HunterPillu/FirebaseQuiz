@@ -8,13 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.ErrorCodes
 import com.firebase.ui.auth.IdpResponse
 import com.prinkal.quiz.R
 import com.prinkal.quiz.ui.base.BaseFragment
-import com.prinkal.quiz.ui.base.ViewModelFactory
 import com.prinkal.quiz.ui.main.viewmodel.LoginViewModel
 import com.prinkal.quiz.utils.Status
 import com.prinkal.quiz.utils.showMsg
@@ -41,11 +39,6 @@ class LoginFragment : BaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
-        ViewModelProviders.of(
-            this,
-            ViewModelFactory()
-        ).get(LoginViewModel::class.java)
-
         setupObserver()
     }
 
@@ -74,7 +67,7 @@ class LoginFragment : BaseFragment() {
 
     private fun setupObserver() {
 
-        viewModel.getLoginResult().observe(this, {
+        viewModel.getLoginResult().observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.IDLE -> {
                     progressBar.visibility = View.GONE

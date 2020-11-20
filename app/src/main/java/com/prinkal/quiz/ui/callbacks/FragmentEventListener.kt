@@ -5,7 +5,7 @@ import com.prinkal.quiz.ui.base.BaseFragment
 
 
 interface FragmentEventListener {
-    fun openFragment(fragment: BaseFragment)
+    fun openFragment(fragment: BaseFragment,canBeStacked:Boolean)
     fun onInviteOpponent(opponent: User, quizId: String)
     fun onCustomBackPressed()
     //fun getConnectionObject(): ConnectionLiveData

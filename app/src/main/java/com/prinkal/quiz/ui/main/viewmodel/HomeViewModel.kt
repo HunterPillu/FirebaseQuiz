@@ -14,9 +14,13 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel : ViewModel() {
 
-    private lateinit var job: Job
     private val quizList = MutableLiveData<Resource<List<Quiz>>>()
     private val courseList = MutableLiveData<Resource<List<Course>>>()
+
+    override fun onCleared() {
+        super.onCleared()
+        CustomLog.e(TAG, "onCleared")
+    }
 
     init {
         CustomLog.e(TAG, "init")
@@ -40,12 +44,6 @@ class HomeViewModel : ViewModel() {
             quizList.postValue(Resource.success(data))
         }
     }
-
-    override fun onCleared() {
-        super.onCleared()
-        // job.cancel()
-    }
-
 
     fun getQuizList(): LiveData<Resource<List<Quiz>>> {
         return quizList

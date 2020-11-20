@@ -9,9 +9,6 @@ import com.prinkal.quiz.data.model.Quiz
 import com.prinkal.quiz.data.model.User
 import com.prinkal.quiz.utils.CustomLog
 import com.prinkal.quiz.utils.Resource
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class PlayerViewModel : ViewModel() {
@@ -24,6 +21,11 @@ class PlayerViewModel : ViewModel() {
 
     init {
         fetchUsers()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        CustomLog.e(TAG, "onCleared")
     }
 
     private fun fetchUsers() {

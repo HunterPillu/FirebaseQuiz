@@ -21,13 +21,11 @@
         android:layout_height="0dp"
         android:layout_margin="@dimen/margin_intrisic_result_card"
         android:visibility="gone"
-        app:cardCornerRadius="@dimen/margin_half"
         app:layout_constraintBottom_toTopOf="@+id/cvWonBy"
-        app:layout_constraintDimensionRatio="7:3"
+        app:layout_constraintDimensionRatio="8:3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appbar"
-        app:layout_constraintVertical_chainStyle="packed"
         tools:visibility="visible">
 
 
@@ -35,8 +33,37 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lavHeader"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:lottie_autoPlay="false"
+                app:lottie_loop="true"
+                app:lottie_repeatCount="3"
+                tools:visibility="visible" />
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lavCongrats"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:lottie_autoPlay="false"
+                app:lottie_loop="true"
+                app:lottie_repeatMode="reverse"
+                tools:visibility="visible" />
+
+
+            <!--<androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/ivCongrats"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -47,7 +74,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintWidth_percent=".30"
                 app:srcCompat="@drawable/logo"
-                tools:visibility="visible" />
+                tools:visibility="visible" />-->
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tvCongrats"
@@ -59,7 +86,7 @@
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/tvScoreA"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/ivCongrats"
+                app:layout_constraintStart_toEndOf="@id/lavCongrats"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="@string/pq_congratulation" />
 
@@ -74,21 +101,22 @@
                 app:layout_constraintBottom_toTopOf="@id/tvScoreB"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHeight_percent=".30"
-                app:layout_constraintStart_toEndOf="@id/ivCongrats"
+                app:layout_constraintStart_toEndOf="@id/lavCongrats"
                 app:layout_constraintTop_toBottomOf="@id/tvCongrats"
                 tools:text="@string/pq_your_score_" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tvScoreB"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_half"
                 android:gravity="center_horizontal"
                 android:textColor="@color/pq_result_score_b"
-                android:textSize="@dimen/body_1"
+                android:textSize="@dimen/body_2"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHeight_percent=".20"
-                app:layout_constraintStart_toEndOf="@id/ivCongrats"
+                app:layout_constraintStart_toEndOf="@id/lavCongrats"
                 app:layout_constraintTop_toBottomOf="@id/tvScoreA"
                 tools:text="@string/pq_opp_score" />
 
@@ -121,13 +149,14 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:minHeight="56dp">
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tvWonBy"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:gravity="center_vertical"
                 android:padding="@dimen/margin_full"
                 android:textColor="@color/text_primary"
                 android:textSize="@dimen/body_2"
@@ -318,7 +347,7 @@
             android:id="@+id/c2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@+id/bHome"
+            app:layout_constraintBottom_toTopOf="@+id/c3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/c1">
@@ -459,20 +488,30 @@
             </com.google.android.material.card.MaterialCardView>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/bHome"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/c3"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="@dimen/margin_intrisic_result_card"
             android:text="@string/pq_back_to_home"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/c2" />
+            app:layout_constraintTop_toBottomOf="@+id/c2">
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/bHome"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_intrisic_result_card"
+                android:layout_marginBottom="@dimen/margin_intrisic_result_card"
+                android:text="@string/pq_back_to_home"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
+        </androidx.constraintlayout.widget.ConstraintLayout>
         <!-- <androidx.constraintlayout.widget.Placeholder
              android:id="@+id/p1"
              android:layout_width="wrap_content"
@@ -481,7 +520,7 @@
              app:layout_constraintBottom_toBottomOf="parent"
              app:layout_constraintEnd_toEndOf="parent"
              app:layout_constraintStart_toStartOf="parent"
-             app:layout_constraintTop_toBottomOf="@+id/bHome"
+             app:layout_constraintTop_toBottomOf="@+id/c3"
              app:layout_constraintGuide_begin="0dp"
              app:layout_constraintVertical_weight="1"
              app:layout_constraintGuide_percent="1" />-->
@@ -493,10 +532,24 @@
         android:id="@+id/pbMain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:elevation="8dp"
+        android:elevation="@dimen/margin_half"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lavBg"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:elevation="@dimen/margin_half"
+        android:scaleType="fitXY"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/logo" />
+        app:lottie_autoPlay="false"
+        app:lottie_loop="false"
+        app:lottie_rawRes="@raw/ballons_flying_up" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -155,5 +155,10 @@ class HomeActivityViewModel : ViewModel() {
         }
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        CustomLog.e(TAG, "onCleared")
+    }
+
 
 }

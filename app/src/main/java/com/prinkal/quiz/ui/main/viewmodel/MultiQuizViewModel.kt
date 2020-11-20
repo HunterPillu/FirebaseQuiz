@@ -23,6 +23,8 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
         internal val TAG = MultiQuizViewModel::class.java.name
     }
 
+    private var isGameStarted: Boolean = false
+
     //game stats of this player will be saved on gameMeta
     private lateinit var gameMeta: GameMeta
 
@@ -232,6 +234,7 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
 
     //set room status to IN_GAME and show first question
     fun startFirstQuestion() {
+        isGameStarted = true
         viewModelScope.launch(Dispatchers.IO) {
             FirebaseApi.updateRoomField(roomId, "status", Const.STATUS_IN_GAME)
         }
@@ -266,6 +269,7 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
     //optional: clearing timer when view model destroyed
     override fun onCleared() {
         super.onCleared()
+        CustomLog.e(TAG, "onCleared")
         cancelTimer()
     }
 
@@ -316,11 +320,15 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
     }
 
     fun pauseTimer() {
-        timer?.shutdown()
+        if (isGameStarted) {
+            timer?.shutdown()
+        }
     }
 
     fun skipCurrentQuestion() {
-        onAnswerSubmitted("")
+        if (isGameStarted) {
+            onAnswerSubmitted("")
+        }
     }
 
     data class Progress(var timeStr: String = "0.0", var progress: Int = 0)
