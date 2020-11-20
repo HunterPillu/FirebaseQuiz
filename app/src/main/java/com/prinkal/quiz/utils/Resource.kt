@@ -52,34 +52,38 @@ data class QuestionData<out T>(
     val data: T? = null,
     var selectedOption: String = "",
     var correctAnswer: String = "",
+    var resId: Int = 0
 ) {
 
     companion object {
 
         fun <T> finished(): QuestionData<T> {
-            return QuestionData(QuestionEvent.FINISHED)
+            return QuestionData(status = QuestionEvent.FINISHED)
         }
 
         fun <T> nextQuestion(data: T): QuestionData<T> {
-            return QuestionData(QuestionEvent.QUESTION, data)
+            return QuestionData(status = QuestionEvent.QUESTION, data = data)
         }
 
         fun <T> waiting(): QuestionData<T> {
-            return QuestionData(QuestionEvent.WAITING)
+            return QuestionData(status = QuestionEvent.WAITING)
         }
 
-        fun <T> loader(isCorrect: Boolean): QuestionData<T> {
-            return if (isCorrect) QuestionData(
-                QuestionEvent.LOADER_CORRECT
-            ) else QuestionData(QuestionEvent.LOADER_INCORRECT)
+        fun <T> loader(resId: Int): QuestionData<T> {
+            return QuestionData(status = QuestionEvent.LOADER, resId = resId)
         }
 
         fun <T> abandoned(userName: String): QuestionData<T> {
-            return QuestionData(QuestionEvent.ABANDONED, selectedOption = userName)
+            return QuestionData(status = QuestionEvent.ABANDONED, selectedOption = userName)
         }
 
         fun <T> showAnswer(selectedOption: String, correctAnswer: String): QuestionData<T> {
-            return QuestionData(QuestionEvent.ANSWER, null, selectedOption, correctAnswer)
+            return QuestionData(
+                status = QuestionEvent.ANSWER,
+                data = null,
+                selectedOption = selectedOption,
+                correctAnswer = correctAnswer
+            )
         }
 
     }

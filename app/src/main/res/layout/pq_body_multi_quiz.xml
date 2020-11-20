@@ -26,6 +26,15 @@
             tools:text="The instrument used to measure the radio activity is" />
 
 
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lavLoader"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible"
+            app:lottie_autoPlay="false"
+            app:lottie_loop="true"
+            tools:visibility="visible" />
+
     </com.google.android.material.card.MaterialCardView>
 
 
@@ -58,7 +67,8 @@
             android:layout_height="match_parent"
             android:layout_marginHorizontal="@dimen/margin_mini"
             android:layout_weight="1"
-            android:tag="B">
+            android:tag="B"
+            app:cardElevation="@dimen/pq_elevation_card_quiz">
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tvOptB"

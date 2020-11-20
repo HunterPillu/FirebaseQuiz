@@ -7,9 +7,9 @@ abstract class LottieAnimationListener: Animator.AnimatorListener {
         // define in child if necessary
     }
 
-    /*override fun onAnimationEnd(animation: Animator?) {
+    override fun onAnimationEnd(animation: Animator?) {
         // define in child if necessary
-    }*/
+    }
 
     override fun onAnimationCancel(animation: Animator?) {
         // define in child if necessary

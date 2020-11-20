@@ -7,17 +7,20 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.textview.MaterialTextView
 import com.prinkal.quiz.R
 import com.prinkal.quiz.data.model.GameRoom
 import com.prinkal.quiz.data.model.Question
 import com.prinkal.quiz.ui.base.BaseFragment
 import com.prinkal.quiz.ui.base.QuizViewModelFactory
 import com.prinkal.quiz.ui.main.viewmodel.MultiQuizViewModel
-import com.prinkal.quiz.utils.*
+import com.prinkal.quiz.utils.Const
+import com.prinkal.quiz.utils.CustomLog
+import com.prinkal.quiz.utils.QuestionEvent
+import com.prinkal.quiz.utils.Status
 import kotlinx.android.synthetic.main.pq_body_multi_quiz.*
 import kotlinx.android.synthetic.main.pq_fragment_multi_quiz.*
 import kotlinx.android.synthetic.main.pq_header_multi_quiz.*
@@ -88,10 +91,7 @@ class MultiQuizFragment : BaseFragment() {
             super.removedOnBackCallback()
             viewModel.onGameFinished()
         }
-        /*//performing negative action
-        builder.setNegativeButton(R.string.pq_no) { dialogInterface, which ->
-            dialogInterface.dismiss()
-        }*/
+
         // Create the AlertDialog
         val alertDialog: AlertDialog = builder.create()
         // Set other dialog properties
@@ -136,7 +136,7 @@ class MultiQuizFragment : BaseFragment() {
 
     //for optimization , every option card is tagged with A,b,C,D . It will remove if else checks here
     private fun updateCardColorAsSelected(v: View): String {
-        val textView = v.findViewWithTag<AppCompatTextView>("tvOpt${v.tag}")
+        val textView = v.findViewWithTag<MaterialTextView>("tvOpt${v.tag}")
         changeCardViewColor(
             v as MaterialCardView,
             ContextCompat.getColor(requireContext(), R.color.gray)
@@ -149,7 +149,7 @@ class MultiQuizFragment : BaseFragment() {
     }
 
     //for optimization , every option card is tagged with A,b,C,D . It will remove if else checks here
-    private fun updateCardColorAsCorrect(v: MaterialCardView, tv: AppCompatTextView) {
+    private fun updateCardColorAsCorrect(v: MaterialCardView, tv: MaterialTextView) {
 
         changeCardViewColor(
             v, ContextCompat.getColor(requireContext(), R.color.pq_card_color_correct)
@@ -161,7 +161,7 @@ class MultiQuizFragment : BaseFragment() {
     }
 
     //for optimization , every option card is tagged with A,b,C,D . It will remove if else checks here
-    private fun updateCardColorAsInCorrect(v: MaterialCardView, tv: AppCompatTextView) {
+    private fun updateCardColorAsInCorrect(v: MaterialCardView, tv: MaterialTextView) {
 
         changeCardViewColor(
             v, ContextCompat.getColor(requireContext(), R.color.pq_card_color_incorrect)
@@ -172,7 +172,7 @@ class MultiQuizFragment : BaseFragment() {
         )
     }
 
-    private fun changeTextViewColor(tv: AppCompatTextView, colorInt: Int) {
+    private fun changeTextViewColor(tv: MaterialTextView, colorInt: Int) {
         tv.setTextColor(colorInt)
     }
 
@@ -181,6 +181,7 @@ class MultiQuizFragment : BaseFragment() {
     }
 
     private fun updateCardsToDefault() {
+
         enableDisableCardClicks(true)
         val cardDefault = ContextCompat.getColor(requireContext(), R.color.pq_card_color_default)
         val textDefault = ContextCompat.getColor(requireContext(), R.color.pq_option_color_default)
@@ -297,12 +298,12 @@ class MultiQuizFragment : BaseFragment() {
                 QuestionEvent.WAITING -> {
                     enableDisableCardClicks(false)
                 }
-                QuestionEvent.LOADER_CORRECT -> {
-                    showMsg(requireContext(), "Correct answer")
-                }
-                QuestionEvent.LOADER_INCORRECT -> {
-                    showMsg(requireContext(), "Incorrect answer")
-
+                QuestionEvent.LOADER -> {
+                    CustomLog.d(TAG, "LOADER")
+                    tvQuestion.visibility = GONE
+                    lavLoader.visibility = VISIBLE
+                    lavLoader.setAnimation(it.resId)
+                    lavLoader.playAnimation()
                 }
                 QuestionEvent.ANSWER -> {
                     updateCorrectOptionColor(it.selectedOption, it.correctAnswer)
@@ -333,6 +334,11 @@ class MultiQuizFragment : BaseFragment() {
     }
 
     private fun updateQuestionView(ques: Question) {
+        tvQuestion.visibility = VISIBLE
+        if (lavLoader.isAnimating) {
+            lavLoader.cancelAnimation()
+            lavLoader.visibility = GONE
+        }
         updateCardsToDefault()
 
         tvPower.visibility = if (ques.powerQuestion) VISIBLE else GONE

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.prinkal.quiz.R
 import com.prinkal.quiz.data.api.FirebaseApi
 import com.prinkal.quiz.data.model.GameMeta
 import com.prinkal.quiz.data.model.GameRoom
@@ -165,16 +166,17 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
         mElapsedTime.postValue(Progress())
 
         //save total consumed time for this question
-        gameMeta.totalTime += timer!!.getConsumedTime()
+        val timeConsumed = timer!!.getConsumedTime()
+        gameMeta.totalTime += timeConsumed
 
         cancelTimer()
         question.postValue(QuestionData.waiting())
 
-        calculateAnswer(selectedOption)
+        calculateAnswer(selectedOption, timeConsumed)
 
     }
 
-    private fun calculateAnswer(selectedOption: String) {
+    private fun calculateAnswer(selectedOption: String, timeConsumed: Int) {
         //check answer if correct or incorrect
         val questionVo = quiz.questions!![quesNo]
         val isCorrect = selectedOption == questionVo.answer
@@ -186,15 +188,15 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
 
         if (isCorrect) {
             //saving game stats : correct answer count
-            gameMeta.totalCorrect += 1
+            gameMeta.totalCorrect.plus(1)
 
             //add the correct score
-            currentScore += questionVo.correctScore
+            currentScore.plus(questionVo.correctScore)
 
             //check if it is a power question
             if (questionVo.powerQuestion) {
                 // add power score
-                currentScore += questionVo.powerScore
+                currentScore.plus(questionVo.powerScore)
             }
             //question.postValue(QuestionData.correctLoader())
         } else {
@@ -203,7 +205,7 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
 
             if (selectedOption != "") {
                 //saving game stats : incorrect answer count
-                gameMeta.totalIncorrect += 1
+                gameMeta.totalIncorrect.plus(1)
             }
         }
 
@@ -222,14 +224,32 @@ class MultiQuizViewModel(private val roomId: String) : ViewModel() {
             question.postValue(QuestionData.showAnswer(selectedOption, questionVo.answer))
             delay(1000)
 
-            //show laoder on ui
-            question.postValue(QuestionData.loader(isCorrect))
-            delay(3000)
+            //show loader on ui
+            val loaderRes = getLoaderSticker(isCorrect, selectedOption, timeConsumed)
+            question.postValue(QuestionData.loader(loaderRes))
+            delay(4000)
 
             //increase question number and show next
             quesNo++
             showNextQuestion()
         }
+    }
+
+    private fun getLoaderSticker(correct: Boolean, selectedOption: String, timeConsumed: Int): Int {
+        return when {
+            correct -> {
+                if (timeConsumed > 8)
+                    R.raw.sticker_26
+                else R.raw.sticker_24
+            }
+            selectedOption == "" -> {
+                R.raw.sticker_29
+            }
+            else -> {
+                R.raw.sticker_36
+            }
+        }
+
     }
 
     //set room status to IN_GAME and show first question
