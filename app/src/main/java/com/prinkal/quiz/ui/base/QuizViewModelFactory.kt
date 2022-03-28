@@ -8,7 +8,7 @@ import com.prinkal.quiz.ui.main.viewmodel.ResultMultiQuizViewModel
 class QuizViewModelFactory(private val roomId: String) :
     ViewModelProvider.Factory {
 
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MultiQuizViewModel::class.java)) {
             return MultiQuizViewModel(roomId) as T
         } else if (modelClass.isAssignableFrom(ResultMultiQuizViewModel::class.java)) {

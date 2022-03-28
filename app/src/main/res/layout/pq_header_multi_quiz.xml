@@ -201,9 +201,9 @@
             android:visibility="gone"
             tools:visibility="visible" />
 
-        <com.google.android.material.progressindicator.ProgressIndicator
+        <com.google.android.material.progressindicator.LinearProgressIndicator
             android:id="@+id/pbHeader"
-            style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Determinate"
+            style="@style/Widget.MaterialComponents.LinearProgressIndicator"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentBottom="true"

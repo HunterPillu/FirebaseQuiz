@@ -94,7 +94,7 @@ class InvitationDialog : BottomSheetDialogFragment() {
         }
     }
 
-    @ExperimentalCoroutinesApi
+    //@ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupUI()

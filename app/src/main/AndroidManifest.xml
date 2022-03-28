@@ -18,10 +18,13 @@
             android:name=".ui.main.view.HomeActivity"
             android:configChanges="orientation|screenSize|keyboardHidden" />
 
-        <activity android:name=".ui.main.view.MainActivity" />
+        <!--<activity
+            android:exported="true"
+            android:name=".ui.main.view.MainActivity" />-->
         <activity
             android:name=".ui.main.view.SplashActivity"
-            android:theme="@style/SplashScreen">
+            android:theme="@style/SplashScreen"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
